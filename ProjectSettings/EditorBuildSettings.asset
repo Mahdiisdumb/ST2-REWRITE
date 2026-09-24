@@ -2,54 +2,38 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1045 &1
 EditorBuildSettings:
-  m_ObjectHideFlags: 0
   serializedVersion: 2
+  m_ObjectHideFlags: 0
   m_Scenes:
   - enabled: 1
-    path: Assets/Redir.unity
-    guid: d29a5f2277cf5c24b855382ea1a379cf
+    path: Assets/intro.unity
   - enabled: 1
     path: Assets/Menu.unity
-    guid: 3b11bacfb509eac4f90bfbc4068380fe
   - enabled: 1
     path: Assets/Lobby.unity
-    guid: 488fab741505bf44fbd990fdd0cf80a3
   - enabled: 1
     path: Assets/Teletubby Land (Day).unity
-    guid: 131c0bfb2733b324890cd8d7fe95d05c
   - enabled: 1
     path: Assets/Teletubby Secret Lair.unity
-    guid: 448b4914632e7024dba0280ae17eed59
   - enabled: 1
     path: Assets/Win.unity
-    guid: 82f46288b996d70498b1501258fa1574
   - enabled: 1
     path: Assets/Teletubby Land (Night).unity
-    guid: e51d93062ca01f548829f2ed7d2c34ef
   - enabled: 1
     path: Assets/Slendytubbies (Classic).unity
-    guid: 2ee5d14f82464be439f8f587fba3558a
   - enabled: 1
     path: Assets/Satellite Station.unity
-    guid: 7fcc4e0cf8b0efd499f8f3b9b094ed51
   - enabled: 1
     path: Assets/Teletubby Lake.unity
-    guid: 3826fa0070c8427499022717839d7d9f
   - enabled: 1
     path: Assets/Teletubby Outskirts.unity
-    guid: c38cbe39684c92743a113329a98e6294
   - enabled: 1
     path: Assets/TUBBYCRAFT/TubbyCraft.unity
-    guid: 192ccd89107c7da45ba8a905f8d127e3
   - enabled: 1
     path: Assets/Sandbox/Sandbox.unity
-    guid: 89263cafec2d5b84da42d845a18da3ef
   - enabled: 1
     path: Assets/Teletubby Training Maze.unity
-    guid: 9055bd4ef20956043bb3aab2af37589d
   - enabled: 1
     path: Assets/Teletubby Secret Center.unity
-    guid: ec8f12c723fccef439eaf97f0438e6d9
   - enabled: 1
     path: Assets/error.unity
-    guid: 9c1e7c786d7c8f140a411e93ed0396fd

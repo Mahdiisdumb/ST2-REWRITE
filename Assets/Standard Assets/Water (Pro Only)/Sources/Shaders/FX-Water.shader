@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 #warning Upgrade NOTE: unity_Scale shader variable was removed; replaced 'unity_Scale.w' with '1.0'
 
 Shader "FX/Water" { 
@@ -76,7 +74,7 @@ struct v2f {
 v2f vert(appdata v)
 {
 	v2f o;
-	o.pos = UnityObjectToClipPos (v.vertex);
+	o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
 	
 	// scroll bump waves
 	float4 temp;

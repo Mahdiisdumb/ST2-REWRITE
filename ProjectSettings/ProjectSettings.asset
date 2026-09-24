@@ -10,12 +10,12 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Mahdi Studios(ZeoWorks)
-  productName: Slendytubbies II(Mahdi Rewrite)
+  companyName: ZeoWorks
+  productName: Slendytubbies II V2.2
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21176471, a: 1}
-  m_ShowUnitySplashScreen: 1
+  m_ShowUnitySplashScreen: 0
   m_ShowUnitySplashLogo: 1
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 1
@@ -70,15 +70,12 @@ PlayerSettings:
   captureSingleScreen: 0
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
-  deferSystemGesturesMode: 0
-  hideHomeButton: 0
   submitAnalytics: 1
   usePlayerLog: 0
   bakeCollisionMeshes: 0
   forceSingleInstance: 0
   resizableWindow: 1
   useMacAppStoreValidation: 0
-  macAppStoreCategory: public.app-category.games
   gpuSkinning: 0
   graphicsJobs: 0
   xboxPIXTextureCapture: 0
@@ -101,8 +98,6 @@ PlayerSettings:
   n3dsEnableVSync: 0
   ignoreAlphaClear: 0
   xboxOneResolution: 0
-  xboxOneSResolution: 0
-  xboxOneXResolution: 3
   xboxOneMonoLoggingLevel: 0
   xboxOneLoggingLevel: 1
   videoMemoryForVertexBuffers: 0
@@ -176,21 +171,15 @@ PlayerSettings:
   iPhone47inSplashScreen: {fileID: 0}
   iPhone55inPortraitSplashScreen: {fileID: 0}
   iPhone55inLandscapeSplashScreen: {fileID: 0}
-  iPhone58inPortraitSplashScreen: {fileID: 0}
-  iPhone58inLandscapeSplashScreen: {fileID: 0}
   iPadPortraitSplashScreen: {fileID: 0}
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
   iPadHighResLandscapeSplashScreen: {fileID: 0}
   appleTVSplashScreen: {fileID: 0}
-  appleTVSplashScreen2x: {fileID: 0}
   tvOSSmallIconLayers: []
-  tvOSSmallIconLayers2x: []
   tvOSLargeIconLayers: []
   tvOSTopShelfImageLayers: []
-  tvOSTopShelfImageLayers2x: []
   tvOSTopShelfImageWideLayers: []
-  tvOSTopShelfImageWideLayers2x: []
   iOSLaunchScreenType: 0
   iOSLaunchScreenPortrait: {fileID: 0}
   iOSLaunchScreenLandscape: {fileID: 0}
@@ -214,7 +203,6 @@ PlayerSettings:
   iOSMetalForceHardShadows: 0
   metalEditorSupport: 0
   metalAPIValidation: 0
-  iOSRenderExtraFrameOnPause: 1
   appleDeveloperTeamID: 
   iOSManualSigningProvisioningProfileID: 
   tvOSManualSigningProvisioningProfileID: 
@@ -256,7 +244,6 @@ PlayerSettings:
   wiiUGamePadStartupScreen: {fileID: 0}
   wiiUDrcBufferDisabled: 0
   wiiUProfilerLibPath: 
-  playModeTestRunnerEnabled: 0
   actionOnDotNetUnhandledException: 0
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 0
@@ -268,7 +255,6 @@ PlayerSettings:
   switchSocketMemoryPoolSize: 0
   switchSocketAllocatorPoolSize: 0
   switchSocketConcurrencyLimit: 0
-  switchScreenResolutionBehavior: 2
   switchUseCPUProfiler: 0
   switchApplicationID: 
   switchNSODependencies: 
@@ -347,7 +333,7 @@ PlayerSettings:
   switchApplicationErrorCodeCategory: 
   switchUserAccountSaveDataSize: 0
   switchUserAccountSaveDataJournalSize: 0
-  switchApplicationAttribute: 0
+  switchAttribute: 0
   switchCardSpecSize: 0
   switchCardSpecClock: 0
   switchRatingsMask: 0
@@ -373,20 +359,17 @@ PlayerSettings:
   switchLocalCommunicationIds_7: 
   switchParentalControl: 0
   switchAllowsScreenshot: 0
-  switchAllowsVideoCapturing: 1
   switchDataLossConfirmation: 0
-  switchSupportedNpadStyles: 3
-  switchSocketConfigEnabled: 0
-  switchTcpInitialSendBufferSize: 32
-  switchTcpInitialReceiveBufferSize: 64
-  switchTcpAutoSendBufferSizeMax: 256
-  switchTcpAutoReceiveBufferSizeMax: 256
-  switchUdpSendBufferSize: 9
-  switchUdpReceiveBufferSize: 42
-  switchSocketBufferEfficiency: 4
-  switchSocketInitializeEnabled: 1
-  switchNetworkInterfaceManagerInitializeEnabled: 1
-  switchPlayerConnectionEnabled: 1
+  XboxTitleId: 
+  XboxImageXexPath: 
+  XboxSpaPath: 
+  XboxGenerateSpa: 0
+  XboxDeployKinectResources: 0
+  XboxSplashScreen: {fileID: 0}
+  xboxEnableSpeech: 0
+  xboxAdditionalTitleMemorySize: 0
+  xboxDeployKinectHeadOrientation: 0
+  xboxDeployKinectHeadPosition: 0
   ps4NPAgeRating: 0
   ps4NPTitleSecret: 
   ps4NPTrophyPackPath: 
@@ -556,7 +539,7 @@ PlayerSettings:
   tizenMicrophonePermissions: 0
   tizenDeploymentTarget: 
   tizenDeploymentTargetType: 0
-  tizenMinOSVersion: 1
+  tizenMinOSVersion: 0
   n3dsUseExtSaveData: 0
   n3dsCompressStaticMem: 0
   n3dsExtSaveDataNumber: 
