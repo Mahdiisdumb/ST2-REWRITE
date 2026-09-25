@@ -1,69 +1,63 @@
-using ExitGames.Client.Photon;
 using UnityEngine;
 
 public class PhotonLagSimulationGui : MonoBehaviour
 {
-	public Rect WindowRect = new Rect(0f, 100f, 120f, 100f);
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public int WindowId = 101;
+	1. No dll files were provided to AssetRipper.
 
-	public bool Visible = true;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public PhotonPeer Peer { get; set; }
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public void Start()
-	{
-		Peer = PhotonNetwork.networkingPeer;
-	}
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public void OnGUI()
-	{
-		if (Visible)
-		{
-			if (Peer == null)
-			{
-				WindowRect = GUILayout.Window(WindowId, WindowRect, NetSimHasNoPeerWindow, "Netw. Sim.");
-			}
-			else
-			{
-				WindowRect = GUILayout.Window(WindowId, WindowRect, NetSimWindow, "Netw. Sim.");
-			}
-		}
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	private void NetSimHasNoPeerWindow(int windowId)
-	{
-		GUILayout.Label("No peer to communicate with. ");
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	private void NetSimWindow(int windowId)
-	{
-		GUILayout.Label(string.Format("Rtt:{0,4} +/-{1,3}", Peer.RoundTripTime, Peer.RoundTripTimeVariance));
-		bool isSimulationEnabled = Peer.IsSimulationEnabled;
-		bool flag = GUILayout.Toggle(isSimulationEnabled, "Simulate");
-		if (flag != isSimulationEnabled)
-		{
-			Peer.IsSimulationEnabled = flag;
-		}
-		float num = Peer.NetworkSimulationSettings.IncomingLag;
-		GUILayout.Label("Lag " + num);
-		num = GUILayout.HorizontalSlider(num, 0f, 500f);
-		Peer.NetworkSimulationSettings.IncomingLag = (int)num;
-		Peer.NetworkSimulationSettings.OutgoingLag = (int)num;
-		float num2 = Peer.NetworkSimulationSettings.IncomingJitter;
-		GUILayout.Label("Jit " + num2);
-		num2 = GUILayout.HorizontalSlider(num2, 0f, 100f);
-		Peer.NetworkSimulationSettings.IncomingJitter = (int)num2;
-		Peer.NetworkSimulationSettings.OutgoingJitter = (int)num2;
-		float num3 = Peer.NetworkSimulationSettings.IncomingLossPercentage;
-		GUILayout.Label("Loss " + num3);
-		num3 = GUILayout.HorizontalSlider(num3, 0f, 10f);
-		Peer.NetworkSimulationSettings.IncomingLossPercentage = (int)num3;
-		Peer.NetworkSimulationSettings.OutgoingLossPercentage = (int)num3;
-		if (GUI.changed)
-		{
-			WindowRect.height = 100f;
-		}
-		GUI.DragWindow();
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
+
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
+
+	4. This script is unnecessary.
+
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

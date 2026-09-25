@@ -72,10 +72,10 @@ LightmapSettings:
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousColorSigma: 0
-    m_PVRFilteringAtrousNormalSigma: 0
-    m_PVRFilteringAtrousPositionSigma: 0
-  m_LightingDataAsset: {fileID: 0}
+    m_PVRFilteringAtrousColorSigma: 1
+    m_PVRFilteringAtrousNormalSigma: 1
+    m_PVRFilteringAtrousPositionSigma: 1
+  m_LightingDataAsset: {fileID: 112000000, guid: afc4e768831eb814eb4032cd7ef1dda9, type: 2}
   m_ShadowMaskMode: 2
 --- !u!1 &1
 GameObject:
@@ -263,7 +263,7 @@ GUITexture:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2}
   m_Enabled: 1
-  m_Texture: {fileID: 2800000, guid: 90c5bc97e020b9d48a7434ae2add654d, type: 3}
+  m_Texture: {fileID: 2800000, guid: 7f73fb10b0bccaf49ab01508e336fcc0, type: 3}
   m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   m_PixelInset:
     serializedVersion: 2
@@ -283,17 +283,13 @@ GUIText:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1}
   m_Enabled: 1
-  m_Text: '
-
-	Congradulations, You collected ALL 
-
-	teletubby custards'
+  m_Text: "\nCongradulations, You collected ALL\nteletubby custards"
   m_Anchor: 1
   m_Alignment: 1
   m_PixelOffset: {x: 0, y: 0}
   m_LineSpacing: 1
   m_TabSize: 4
-  m_Font: {fileID: 12800000, guid: 2858e86fec3de8140a706c8202fe7184, type: 3}
+  m_Font: {fileID: 12800000, guid: 75d9f93e1c4e1ed43aa0504964877f46, type: 3}
   m_Material: {fileID: 0}
   m_FontSize: 26
   m_FontStyle: 0
@@ -316,7 +312,7 @@ GUIText:
   m_PixelOffset: {x: 0, y: 0}
   m_LineSpacing: 1
   m_TabSize: 4
-  m_Font: {fileID: 12800000, guid: c23fa9f283097b840bd8c485e23741dd, type: 3}
+  m_Font: {fileID: 12800000, guid: bb69010179a334f43b7239e3284b3ff7, type: 3}
   m_Material: {fileID: 0}
   m_FontSize: 10
   m_FontStyle: 0
@@ -333,12 +329,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5adfb4769f0f8504b85cea9e0a5c558b, type: 3}
+  m_Script: {fileID: 11500000, guid: aa57af40b0a0bfa4352ef02114252964, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  spanish: 'Felicidades,
-
-	conseguiste todas las tubipapillas'
 --- !u!114 &19
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,7 +340,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb64d1265827d14c9ccea1e679fb584, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cf9247328c4a6b5f9ea81420f264b98, type: 3}
   m_Name:
   m_EditorClassIdentifier:
 --- !u!114 &20
@@ -358,7 +351,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5adfb4769f0f8504b85cea9e0a5c558b, type: 3}
+  m_Script: {fileID: 11500000, guid: aa57af40b0a0bfa4352ef02114252964, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  spanish: Presiona Escape Para Continuar

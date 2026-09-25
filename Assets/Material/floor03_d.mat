@@ -17,21 +17,21 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: bf2cb913e1dd11440873c372a4a6b23a, type: 3}
+      _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 038a5c27c31d835418a79b8c3c614fb2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c50c9485dd74039459a8eb34d369cce2, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: f9f7922573041d045bd192aa309119b3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 2800000, guid: ae96fa895a7deda44a446f82357d5689, type: 3}
+      _ParallaxMap:
+        m_Texture: {fileID: 2800000, guid: 2893de8db10b04d499d222991051ea10, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Parallax: 0.036981132
-    - _Shininess: 0.26114386
+      _Parallax: 0.036981132
+      _Shininess: 0.26114386
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _SpecColor: {r: 1, g: 1, b: 1, a: 1}

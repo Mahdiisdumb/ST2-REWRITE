@@ -1,124 +1,63 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class ServerSettings : ScriptableObject
+public class ServerSettings : MonoBehaviour
 {
-	public enum HostingOption
-	{
-		NotSet = 0,
-		PhotonCloud = 1,
-		SelfHosted = 2,
-		OfflineMode = 3
-	}
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public const string DefaultCloudServerUrl = "app-eu.exitgamescloud.com";
+	1. No dll files were provided to AssetRipper.
 
-	public const string DefaultServerAddress = "127.0.0.1";
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public const int DefaultMasterPort = 5055;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public const int DefaultNameServerPort = 5058;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public const string DefaultAppID = "Master";
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public static readonly string[] CloudServerRegionPrefixes = new string[4] { "app-eu", "app-us", "app-asia", "app-jp" };
+	3. Assembly Reconstruction has not been implemented.
 
-	public HostingOption HostType;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public string ServerAddress = "127.0.0.1";
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public int ServerPort = 5055;
+	4. This script is unnecessary.
 
-	public string AppID = string.Empty;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public bool PingCloudServersOnAwake;
+	5. Script Content Level 0
 
-	public List<string> RpcList;
+		AssetRipper was set to not load any script information.
 
-	[HideInInspector]
-	public bool DisableAutoOpenWizard;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public string Region
-	{
-		get
-		{
-			return ExtractRegionFromAddress(ServerAddress);
-		}
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public static int FindRegionForServerAddress(string server)
-	{
-		int result = 0;
-		for (int i = 0; i < CloudServerRegionPrefixes.Length; i++)
-		{
-			if (server.StartsWith(CloudServerRegionPrefixes[i]))
-			{
-				return i;
-			}
-		}
-		return result;
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	public static string ExtractRegionFromAddress(string address)
-	{
-		if (address == null)
-		{
-			return null;
-		}
-		int num = address.IndexOf('.');
-		if (num < 5)
-		{
-			return null;
-		}
-		string text = address.Substring(4, num - 4);
-		Debug.Log("Extracted region: " + text);
-		return text;
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public static string FindServerAddressForRegion(int regionIndex)
-	{
-		return "app-eu.exitgamescloud.com".Replace("app-eu", CloudServerRegionPrefixes[regionIndex]);
-	}
-
-	public static string FindServerAddressForRegion(CloudServerRegion regionIndex)
-	{
-		return "app-eu.exitgamescloud.com".Replace("app-eu", CloudServerRegionPrefixes[(int)regionIndex]);
-	}
-
-	public static bool TryParseCloudServerRegion(string regionShortcut, out CloudServerRegion region)
-	{
-		region = CloudServerRegion.US;
-		try
-		{
-			region = (CloudServerRegion)Enum.Parse(typeof(CloudServerRegion), regionShortcut, true);
-		}
-		catch
-		{
-			return false;
-		}
-		return true;
-	}
-
-	public void UseCloud(string cloudAppid, int regionIndex)
-	{
-		HostType = HostingOption.PhotonCloud;
-		AppID = cloudAppid;
-		ServerAddress = FindServerAddressForRegion(regionIndex);
-		ServerPort = 5055;
-	}
-
-	public void UseMyServer(string serverAddress, int serverPort, string application)
-	{
-		HostType = HostingOption.SelfHosted;
-		AppID = ((application == null) ? "Master" : application);
-		ServerAddress = serverAddress;
-		ServerPort = serverPort;
-	}
-
-	public override string ToString()
-	{
-		return string.Concat("ServerSettings: ", HostType, " ", ServerAddress);
-	}
+	*/
 }

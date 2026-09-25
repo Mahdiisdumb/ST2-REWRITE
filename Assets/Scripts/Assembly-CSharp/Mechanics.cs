@@ -1,139 +1,63 @@
-using System.Collections;
-using Photon;
 using UnityEngine;
 
-public class Mechanics : Photon.MonoBehaviour
+public class Mechanics : MonoBehaviour
 {
-	public GameObject[] custardpos;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public Transform custard;
+	1. No dll files were provided to AssetRipper.
 
-	public bool showobjective;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public Transform startpoint;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public bool gamestart;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public Transform NPC1;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Transform NPC2;
+	3. Assembly Reconstruction has not been implemented.
 
-	public Transform versuspoint;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public GameObject myplayer;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public GameObject mymonster;
+	4. This script is unnecessary.
 
-	public int maxcustards = 10;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public int custardsleft;
+	5. Script Content Level 0
 
-	public string npcplayer = "playerTank";
+		AssetRipper was set to not load any script information.
 
-	private string objective;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public bool isversus;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public bool atbeginning;
+	7. An incorrect path was provided to AssetRipper.
 
-	public GameManager gm;
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	private void Awake()
-	{
-		npcplayer += "1";
-		gm = GetComponent<GameManager>();
-		if (base.photonView.isMine)
-		{
-			maxcustards = PlayerPrefs.GetInt("custardamount");
-			atbeginning = true;
-		}
-		else
-		{
-			maxcustards = GameObject.FindGameObjectsWithTag("custard").Length;
-		}
-		if (PhotonNetwork.isMasterClient)
-		{
-			if (PlayerPrefs.GetString("gamemode") == "DM")
-			{
-				mymonster = PhotonNetwork.Instantiate(npcplayer, versuspoint.position, versuspoint.rotation, 0, null);
-				base.photonView.RPC("IsVersus", PhotonTargets.AllBuffered);
-			}
-			else
-			{
-				myplayer = PhotonNetwork.Instantiate("player", startpoint.position, startpoint.rotation, 0, null);
-			}
-		}
-		else
-		{
-			myplayer = PhotonNetwork.Instantiate("player", startpoint.position, startpoint.rotation, 0, null);
-		}
-	}
-
-	private void Update()
-	{
-		if (PhotonNetwork.isMasterClient && isversus && mymonster == null)
-		{
-			PhotonNetwork.Destroy(myplayer.gameObject);
-			mymonster = PhotonNetwork.Instantiate(npcplayer, versuspoint.position, versuspoint.rotation, 0, null);
-		}
-		if (base.photonView.isMine && atbeginning)
-		{
-			if (custardsleft < maxcustards)
-			{
-				custardpos = GameObject.FindGameObjectsWithTag("custardPOS");
-				GameObject[] array = custardpos;
-				foreach (GameObject gameObject in array)
-				{
-					if (custardsleft < maxcustards)
-					{
-						int num = Random.Range(1, 3);
-						if (num == 1)
-						{
-							PhotonNetwork.InstantiateSceneObject("custard", gameObject.transform.position, gameObject.transform.rotation, 0, null);
-							gameObject.transform.tag = "Untagged";
-							custardsleft++;
-						}
-					}
-				}
-			}
-			if (custardsleft == maxcustards && !showobjective)
-			{
-				StartCoroutine(ShowObjectiveNow());
-			}
-		}
-		else if (!showobjective)
-		{
-			maxcustards = GameObject.FindGameObjectsWithTag("custard").Length;
-			StartCoroutine(ShowObjectiveNow());
-		}
-		if (gamestart && GameObject.FindGameObjectsWithTag("custard").Length == 0)
-		{
-			PhotonNetwork.LeaveRoom();
-			Application.LoadLevel("Win");
-		}
-	}
-
-	private IEnumerator ShowObjectiveNow()
-	{
-		showobjective = true;
-		if (PlayerPrefs.GetInt("language") == 1)
-		{
-			objective = "Recoge todas " + maxcustards + " las tubipapillas";
-		}
-		else
-		{
-			objective = "Collect All " + maxcustards + " Teletubby Custards";
-		}
-		base.gameObject.GetComponent<GUIText>().text = objective;
-		base.gameObject.GetComponent<GUIText>().enabled = true;
-		yield return new WaitForSeconds(5f);
-		base.gameObject.GetComponent<GUIText>().enabled = false;
-		gamestart = true;
-	}
-
-	[RPC]
-	private void IsVersus()
-	{
-		isversus = true;
-	}
+	*/
 }

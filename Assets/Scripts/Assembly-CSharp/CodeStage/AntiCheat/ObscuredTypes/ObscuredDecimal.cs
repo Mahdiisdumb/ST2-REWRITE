@@ -1,245 +1,66 @@
-using System;
-using System.Runtime.InteropServices;
-using CodeStage.AntiCheat.Common;
-using CodeStage.AntiCheat.Detectors;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CodeStage.AntiCheat.ObscuredTypes
 {
-	[Serializable]
-	public struct ObscuredDecimal : IEquatable<ObscuredDecimal>, IFormattable
+	public class ObscuredDecimal : MonoBehaviour
 	{
-		[StructLayout(LayoutKind.Explicit)]
-		private struct DecimalLongBytesUnion
-		{
-			[FieldOffset(0)]
-			public decimal d;
+		/*
+		Dummy class. This could have happened for several reasons:
 
-			[FieldOffset(0)]
-			public long l1;
+		1. No dll files were provided to AssetRipper.
 
-			[FieldOffset(8)]
-			public long l2;
+			Unity asset bundles and serialized files do not contain script information to decompile.
+				* For Mono games, that information is contained in .NET dll files.
+				* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+				
+			AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+			A unexpected file structure could cause AssetRipper to not find the required files.
 
-			[FieldOffset(0)]
-			public ACTkByte16 b16;
-		}
+		2. Incorrect dll files were provided to AssetRipper.
 
-		private static long cryptoKey = 209208L;
+			Any of the following could cause this:
+				* Il2CppInterop assemblies
+				* Deobfuscated assemblies
+				* Older assemblies (compared to when the bundle was built)
+				* Newer assemblies (compared to when the bundle was built)
 
-		private long currentCryptoKey;
+			Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-		[FormerlySerializedAs("hiddenValue")]
-		private byte[] hiddenValueOld;
+		3. Assembly Reconstruction has not been implemented.
 
-		private ACTkByte16 hiddenValue;
+			Asset bundles contain a small amount of information about the script content.
+			This information can be used to recover the serializable fields of a script.
 
-		private decimal fakeValue;
+			See: https://github.com/AssetRipper/AssetRipper/issues/655
+	
+		4. This script is unnecessary.
 
-		private bool inited;
+			If this script has no asset or script references, it can be deleted.
+			Be sure to resolve any compile errors before deleting because they can hide references.
 
-		private ObscuredDecimal(ACTkByte16 value)
-		{
-			currentCryptoKey = cryptoKey;
-			hiddenValue = value;
-			hiddenValueOld = null;
-			fakeValue = 0m;
-			inited = true;
-		}
+		5. Script Content Level 0
 
-		public static void SetNewCryptoKey(long newKey)
-		{
-			cryptoKey = newKey;
-		}
+			AssetRipper was set to not load any script information.
 
-		public static decimal Encrypt(decimal value)
-		{
-			return Encrypt(value, cryptoKey);
-		}
+		6. Cpp2IL failed to decompile Il2Cpp data
 
-		public static decimal Encrypt(decimal value, long key)
-		{
-			DecimalLongBytesUnion decimalLongBytesUnion = default(DecimalLongBytesUnion);
-			decimalLongBytesUnion.d = value;
-			decimalLongBytesUnion.l1 ^= key;
-			decimalLongBytesUnion.l2 ^= key;
-			return decimalLongBytesUnion.d;
-		}
+			If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+			This is an upstream problem, and the AssetRipper developer has very little control over it.
+			Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-		private static ACTkByte16 InternalEncrypt(decimal value)
-		{
-			return InternalEncrypt(value, 0L);
-		}
+		7. An incorrect path was provided to AssetRipper.
 
-		private static ACTkByte16 InternalEncrypt(decimal value, long key)
-		{
-			long num = key;
-			if (num == 0)
-			{
-				num = cryptoKey;
-			}
-			DecimalLongBytesUnion decimalLongBytesUnion = default(DecimalLongBytesUnion);
-			decimalLongBytesUnion.d = value;
-			decimalLongBytesUnion.l1 ^= num;
-			decimalLongBytesUnion.l2 ^= num;
-			return decimalLongBytesUnion.b16;
-		}
+			This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+			AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+			An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+			Generally, AssetRipper expects users to provide the root folder of the game. For example:
+				* Windows: the folder containing the game's .exe file
+				* Mac: the .app file/folder
+				* Linux: the folder containing the game's executable file
+				* Android: the apk file
+				* iOS: the ipa file
+				* Switch: the folder containing exefs and romfs
 
-		public static decimal Decrypt(decimal value)
-		{
-			return Decrypt(value, cryptoKey);
-		}
-
-		public static decimal Decrypt(decimal value, long key)
-		{
-			DecimalLongBytesUnion decimalLongBytesUnion = default(DecimalLongBytesUnion);
-			decimalLongBytesUnion.d = value;
-			decimalLongBytesUnion.l1 ^= key;
-			decimalLongBytesUnion.l2 ^= key;
-			return decimalLongBytesUnion.d;
-		}
-
-		public void ApplyNewCryptoKey()
-		{
-			if (currentCryptoKey != cryptoKey)
-			{
-				hiddenValue = InternalEncrypt(InternalDecrypt(), cryptoKey);
-				currentCryptoKey = cryptoKey;
-			}
-		}
-
-		public void RandomizeCryptoKey()
-		{
-			decimal value = InternalDecrypt();
-			do
-			{
-				currentCryptoKey = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-			}
-			while (currentCryptoKey == 0);
-			hiddenValue = InternalEncrypt(value, currentCryptoKey);
-		}
-
-		public decimal GetEncrypted()
-		{
-			ApplyNewCryptoKey();
-			DecimalLongBytesUnion decimalLongBytesUnion = default(DecimalLongBytesUnion);
-			decimalLongBytesUnion.b16 = hiddenValue;
-			return decimalLongBytesUnion.d;
-		}
-
-		public void SetEncrypted(decimal encrypted)
-		{
-			inited = true;
-			DecimalLongBytesUnion decimalLongBytesUnion = default(DecimalLongBytesUnion);
-			decimalLongBytesUnion.d = encrypted;
-			hiddenValue = decimalLongBytesUnion.b16;
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				fakeValue = InternalDecrypt();
-			}
-		}
-
-		private decimal InternalDecrypt()
-		{
-			if (!inited)
-			{
-				currentCryptoKey = cryptoKey;
-				hiddenValue = InternalEncrypt(0m);
-				fakeValue = 0m;
-				inited = true;
-			}
-			DecimalLongBytesUnion decimalLongBytesUnion = default(DecimalLongBytesUnion);
-			decimalLongBytesUnion.b16 = hiddenValue;
-			decimalLongBytesUnion.l1 ^= currentCryptoKey;
-			decimalLongBytesUnion.l2 ^= currentCryptoKey;
-			decimal d = decimalLongBytesUnion.d;
-			if (ObscuredCheatingDetector.IsRunning && fakeValue != 0m && d != fakeValue)
-			{
-				ObscuredCheatingDetector.Instance.OnCheatingDetected();
-			}
-			return d;
-		}
-
-		public static implicit operator ObscuredDecimal(decimal value)
-		{
-			ObscuredDecimal result = new ObscuredDecimal(InternalEncrypt(value));
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				result.fakeValue = value;
-			}
-			return result;
-		}
-
-		public static implicit operator decimal(ObscuredDecimal value)
-		{
-			return value.InternalDecrypt();
-		}
-
-		public static explicit operator ObscuredDecimal(ObscuredFloat f)
-		{
-			return (decimal)(float)f;
-		}
-
-		public static ObscuredDecimal operator ++(ObscuredDecimal input)
-		{
-			decimal value = input.InternalDecrypt() + 1m;
-			input.hiddenValue = InternalEncrypt(value, input.currentCryptoKey);
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				input.fakeValue = value;
-			}
-			return input;
-		}
-
-		public static ObscuredDecimal operator --(ObscuredDecimal input)
-		{
-			decimal value = input.InternalDecrypt() - 1m;
-			input.hiddenValue = InternalEncrypt(value, input.currentCryptoKey);
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				input.fakeValue = value;
-			}
-			return input;
-		}
-
-		public override string ToString()
-		{
-			return InternalDecrypt().ToString();
-		}
-
-		public string ToString(string format)
-		{
-			return InternalDecrypt().ToString(format);
-		}
-
-		public string ToString(IFormatProvider provider)
-		{
-			return InternalDecrypt().ToString(provider);
-		}
-
-		public string ToString(string format, IFormatProvider provider)
-		{
-			return InternalDecrypt().ToString(format, provider);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (!(obj is ObscuredDecimal))
-			{
-				return false;
-			}
-			return Equals((ObscuredDecimal)obj);
-		}
-
-		public bool Equals(ObscuredDecimal obj)
-		{
-			return obj.InternalDecrypt().Equals(InternalDecrypt());
-		}
-
-		public override int GetHashCode()
-		{
-			return InternalDecrypt().GetHashCode();
-		}
+		*/
 	}
 }

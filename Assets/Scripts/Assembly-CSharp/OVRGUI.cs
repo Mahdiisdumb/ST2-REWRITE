@@ -1,108 +1,63 @@
 using UnityEngine;
 
-public class OVRGUI
+public class OVRGUI : MonoBehaviour
 {
-	private Font FontReplace;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private OVRCameraController CameraController;
+	1. No dll files were provided to AssetRipper.
 
-	private float PixelWidth = 1280f;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	private float PixelHeight = 800f;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private float DisplayWidth = 1280f;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private float DisplayHeight = 800f;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	private Rect DrawRect;
+	3. Assembly Reconstruction has not been implemented.
 
-	public void SetCameraController(ref OVRCameraController cameraController)
-	{
-		CameraController = cameraController;
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public void GetFontReplace(ref Font fontReplace)
-	{
-		fontReplace = FontReplace;
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public void SetFontReplace(Font fontReplace)
-	{
-		FontReplace = fontReplace;
-	}
+	4. This script is unnecessary.
 
-	public void GetPixelResolution(ref float pixelWidth, ref float pixelHeight)
-	{
-		pixelWidth = PixelWidth;
-		pixelHeight = PixelHeight;
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public void SetPixelResolution(float pixelWidth, float pixelHeight)
-	{
-		PixelWidth = pixelWidth;
-		PixelHeight = pixelHeight;
-	}
+	5. Script Content Level 0
 
-	public void GetDisplayResolution(ref float Width, ref float Height)
-	{
-		Width = DisplayWidth;
-		Height = DisplayHeight;
-	}
+		AssetRipper was set to not load any script information.
 
-	public void SetDisplayResolution(float Width, float Height)
-	{
-		DisplayWidth = Width;
-		DisplayHeight = Height;
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public void StereoBox(int X, int Y, int wX, int hY, ref string text, Color color)
-	{
-		Font font = GUI.skin.font;
-		GUI.color = color;
-		if (GUI.skin.font != FontReplace)
-		{
-			GUI.skin.font = FontReplace;
-		}
-		float num = PixelWidth / DisplayWidth;
-		CalcPositionAndSize((float)X * num, (float)Y * num, (float)wX * num, (float)hY * num, ref DrawRect);
-		GUI.Box(DrawRect, text);
-		GUI.skin.font = font;
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public void StereoBox(float X, float Y, float wX, float hY, ref string text, Color color)
-	{
-		StereoBox((int)(X * PixelWidth), (int)(Y * PixelHeight), (int)(wX * PixelWidth), (int)(hY * PixelHeight), ref text, color);
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	public void StereoDrawTexture(int X, int Y, int wX, int hY, ref Texture image, Color color)
-	{
-		GUI.color = color;
-		if (GUI.skin.font != FontReplace)
-		{
-			GUI.skin.font = FontReplace;
-		}
-		float num = PixelWidth / DisplayWidth;
-		CalcPositionAndSize((float)X * num, (float)Y * num, (float)wX * num, (float)hY * num, ref DrawRect);
-		GUI.DrawTexture(DrawRect, image);
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public void StereoDrawTexture(float X, float Y, float wX, float hY, ref Texture image, Color color)
-	{
-		StereoDrawTexture((int)(X * PixelWidth), (int)(Y * PixelHeight), (int)(wX * PixelWidth), (int)(hY * PixelHeight), ref image, color);
-	}
-
-	private void CalcPositionAndSize(float X, float Y, float wX, float hY, ref Rect calcPosSize)
-	{
-		float num = (float)Screen.width / PixelWidth;
-		float num2 = (float)Screen.height / PixelHeight;
-		if (CameraController != null && CameraController.PortraitMode)
-		{
-			num = (float)Screen.height / PixelWidth;
-			num2 = (float)Screen.width / PixelHeight;
-		}
-		calcPosSize.x = X * num;
-		calcPosSize.width = wX * num;
-		calcPosSize.y = Y * num2;
-		calcPosSize.height = hY * num2;
-	}
+	*/
 }

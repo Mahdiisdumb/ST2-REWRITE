@@ -72,10 +72,10 @@ LightmapSettings:
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousColorSigma: 0
-    m_PVRFilteringAtrousNormalSigma: 0
-    m_PVRFilteringAtrousPositionSigma: 0
-  m_LightingDataAsset: {fileID: 0}
+    m_PVRFilteringAtrousColorSigma: 1
+    m_PVRFilteringAtrousNormalSigma: 1
+    m_PVRFilteringAtrousPositionSigma: 1
+  m_LightingDataAsset: {fileID: 112000000, guid: cda648e11ad02d542bc5a5c10d12fad8, type: 2}
   m_ShadowMaskMode: 2
 --- !u!1 &1
 GameObject:
@@ -175,35 +175,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d681bc158bef539408cf16244367cb97, type: 3}
+  m_Script: {fileID: 11500000, guid: 2828fb1a80f12239d83baab3e823f2e2, type: 3}
   m_Name:
   m_EditorClassIdentifier:
-  guiSKin: {fileID: 0}
-  blackScreen: {fileID: 2800000, guid: 2f0daacf1d87baf45aff96793a06b413, type: 3}
-  top: {fileID: 2800000, guid: 026f832537d9a1a47a52a28e259e69bc, type: 3}
-  bottom: {fileID: 2800000, guid: e007e89d2e8d65e45ae47fffe413a7db, type: 3}
-  maxplayers2: 0
-  roundDuration: 600
-  allMaps:
-  - mapName: Teletubby Secret Lair
-    mapPreview: {fileID: 2800000, guid: 712a2337c13b7b74fbb8d48a0e22f6e9, type: 3}
-  - mapName: Teletubby Secret Center
-    mapPreview: {fileID: 2800000, guid: c376d9a5ea8ac7b4096efb41a14a152f, type: 3}
-  - mapName: Teletubby Land (Night)
-    mapPreview: {fileID: 2800000, guid: 4219b46b2e1afa4489cfabdefd086d07, type: 3}
-  - mapName: Teletubby Land (Day)
-    mapPreview: {fileID: 2800000, guid: 6c039df6122a307489c39d81e1d97ea2, type: 3}
-  - mapName: Satellite Station
-    mapPreview: {fileID: 2800000, guid: 13c64625271148c49b4344f75abc77cc, type: 3}
-  - mapName: Teletubby Lake
-    mapPreview: {fileID: 2800000, guid: 6703f824caaf2eb488bf53bea66fd31a, type: 3}
-  - mapName: Teletubby Outskirts
-    mapPreview: {fileID: 2800000, guid: be2db6ddb24b5544aab8ef356ebd545c, type: 3}
-  - mapName: Teletubby Training Maze
-    mapPreview: {fileID: 2800000, guid: 044fcdb794847e84ba31d93a47d4d3b2, type: 3}
-  - mapName: TubbyCraft
-    mapPreview: {fileID: 2800000, guid: 6df7e0d061d1ed2418304e88091ed96d, type: 3}
-  - mapName: Slendytubbies (Classic)
-    mapPreview: {fileID: 2800000, guid: 2447177ac336dd0468f659e2e5372c43, type: 3}
-  totplayers: 25
-  maxPlayers: 6

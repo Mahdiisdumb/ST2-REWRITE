@@ -1,203 +1,63 @@
-using System;
-using System.Collections;
-using System.Net;
 using UnityEngine;
 
 public class PingCloudRegions : MonoBehaviour
 {
-	public static string ClosestRegion;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public static PingCloudRegions Instance;
+	1. No dll files were provided to AssetRipper.
 
-	private bool isPinging;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	private int lowestRegionAverage = -1;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private const string PlayerPrefsKey = "PUNCloudBestRegion";
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public static bool ClosestRegionAvailable
-	{
-		get
-		{
-			return !string.IsNullOrEmpty(ClosestRegion);
-		}
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public void Awake()
-	{
-		Instance = this;
-		if (!LoadRegion(out ClosestRegion) && PhotonNetwork.PhotonServerSettings.PingCloudServersOnAwake)
-		{
-			RefreshCloudServerRating();
-		}
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	public static void RefreshCloudServerRating()
-	{
-		if (Instance != null)
-		{
-			if (Instance.isPinging)
-			{
-				Debug.Log("RefreshCloudServerRating already in process. Skipping this call.");
-			}
-			else
-			{
-				Instance.StartCoroutine(Instance.PingAllRegions());
-			}
-		}
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private IEnumerator PingAllRegions()
-	{
-		ServerSettings settings = (ServerSettings)Resources.Load("PhotonServerSettings", typeof(ServerSettings));
-		if (settings.HostType == ServerSettings.HostingOption.OfflineMode)
-		{
-			yield break;
-		}
-		ClosestRegion = null;
-		isPinging = true;
-		lowestRegionAverage = -1;
-		IEnumerator enumerator = Enum.GetValues(typeof(CloudServerRegion)).GetEnumerator();
-		try
-		{
-			while (enumerator.MoveNext())
-			{
-				CloudServerRegion region = (CloudServerRegion)enumerator.Current;
-				yield return StartCoroutine(PingRegion(region));
-			}
-		}
-		finally
-		{
-			IDisposable disposable;
-			IDisposable disposable2 = (disposable = enumerator as IDisposable);
-			if (disposable != null)
-			{
-				disposable2.Dispose();
-			}
-		}
-		isPinging = false;
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private IEnumerator PingRegion(CloudServerRegion region)
-	{
-		string hostname = ServerSettings.FindServerAddressForRegion(region);
-		string regionIp = ResolveHost(hostname);
-		if (string.IsNullOrEmpty(regionIp))
-		{
-			Debug.LogError("Could not resolve host: " + hostname);
-			yield break;
-		}
-		int pingSum = 0;
-		int tries = 3;
-		int skipped = 0;
-		float timeout = 0.7f;
-		for (int i = 0; i < tries; i++)
-		{
-			float startTime = Time.time;
-			Ping ping = new Ping(regionIp);
-			while (!ping.isDone && Time.time < startTime + timeout)
-			{
-				yield return 0;
-			}
-			if (ping.time == -1)
-			{
-				if (skipped > 5)
-				{
-					pingSum += (int)(timeout * 1000f) * tries;
-					break;
-				}
-				i--;
-				skipped++;
-			}
-			else
-			{
-				pingSum += ping.time;
-			}
-		}
-		int pingAverage = pingSum / tries;
-		if (pingAverage < lowestRegionAverage || lowestRegionAverage == -1)
-		{
-			lowestRegionAverage = pingAverage;
-			SaveAndSetRegion(region.ToString());
-		}
-	}
+	4. This script is unnecessary.
 
-	public static void ConnectToBestRegion()
-	{
-		Instance.StartCoroutine(Instance.ConnectToBestRegionInternal());
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private IEnumerator ConnectToBestRegionInternal()
-	{
-		CloudServerRegion bestRegion;
-		if (!ClosestRegionAvailable || !ServerSettings.TryParseCloudServerRegion(ClosestRegion, out bestRegion))
-		{
-			RefreshCloudServerRating();
-		}
-		while (isPinging)
-		{
-			yield return 0;
-		}
-		ServerSettings.TryParseCloudServerRegion(ClosestRegion, out bestRegion);
-		string bestServerAddress = ServerSettings.FindServerAddressForRegion(bestRegion);
-		string bestServerFullAddress = bestServerAddress + ":" + 5055;
-		PhotonNetwork.networkingPeer.MasterServerAddress = bestServerFullAddress;
-		PhotonNetwork.networkingPeer.Connect(bestServerFullAddress, ServerConnection.MasterServer);
-	}
+	5. Script Content Level 0
 
-	private static bool LoadRegion(out string region)
-	{
-		region = PlayerPrefs.GetString("PUNCloudBestRegion", string.Empty);
-		return !string.IsNullOrEmpty(region);
-	}
+		AssetRipper was set to not load any script information.
 
-	private static void SaveAndSetRegion(string region)
-	{
-		ClosestRegion = region;
-		PlayerPrefs.SetString("PUNCloudBestRegion", region);
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public static void DeleteRegionPref()
-	{
-		if (Instance != null && Instance.isPinging)
-		{
-			Debug.LogWarning("DeleteRegionPref can't delete region while pining is going on.");
-			return;
-		}
-		ClosestRegion = null;
-		PlayerPrefs.DeleteKey("PUNCloudBestRegion");
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public static void OverrideRegion(CloudServerRegion region)
-	{
-		SaveAndSetRegion(region.ToString());
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	public static string ResolveHost(string hostName)
-	{
-		try
-		{
-			IPAddress[] hostAddresses = Dns.GetHostAddresses(hostName);
-			if (hostAddresses.Length == 1)
-			{
-				return hostAddresses[0].ToString();
-			}
-			foreach (IPAddress iPAddress in hostAddresses)
-			{
-				if (iPAddress != null)
-				{
-					string text = iPAddress.ToString();
-					if (text.IndexOf('.') >= 0)
-					{
-						return text;
-					}
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			Debug.Log("Exception caught! " + ex.Source + " Message: " + ex.Message);
-		}
-		return string.Empty;
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

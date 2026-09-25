@@ -1,156 +1,66 @@
-using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Security;
-using System.Threading;
+using UnityEngine;
 
 namespace ExitGames.Client.Photon
 {
-	internal class SocketUdp : IPhotonSocket
+	public class SocketUdp : MonoBehaviour
 	{
-		private Socket sock;
+		/*
+		Dummy class. This could have happened for several reasons:
 
-		private readonly object syncer = new object();
+		1. No dll files were provided to AssetRipper.
 
-		public SocketUdp(PeerBase npeer)
-			: base(npeer)
-		{
-			if (ReportDebugOfLevel(DebugLevel.ALL))
-			{
-				base.Listener.DebugReturn(DebugLevel.ALL, "CSharpSocket: UDP, Unity3d.");
-			}
-			base.Protocol = ConnectionProtocol.Udp;
-			PollReceive = false;
-		}
+			Unity asset bundles and serialized files do not contain script information to decompile.
+				* For Mono games, that information is contained in .NET dll files.
+				* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+				
+			AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+			A unexpected file structure could cause AssetRipper to not find the required files.
 
-		public override bool Connect()
-		{
-			lock (syncer)
-			{
-				if (!base.Connect())
-				{
-					return false;
-				}
-				base.State = PhotonSocketState.Connecting;
-				Thread thread = new Thread(DnsAndConnect);
-				thread.Name = "photon dns thread";
-				thread.IsBackground = true;
-				thread.Start();
-				return true;
-			}
-		}
+		2. Incorrect dll files were provided to AssetRipper.
 
-		public override bool Disconnect()
-		{
-			if (ReportDebugOfLevel(DebugLevel.INFO))
-			{
-				EnqueueDebugReturn(DebugLevel.INFO, "CSharpSocket.Disconnect()");
-			}
-			base.State = PhotonSocketState.Disconnecting;
-			lock (syncer)
-			{
-				if (sock != null)
-				{
-					try
-					{
-						sock.Close();
-						sock = null;
-					}
-					catch (Exception ex)
-					{
-						EnqueueDebugReturn(DebugLevel.INFO, "Exception in Disconnect(): " + ex);
-					}
-				}
-			}
-			base.State = PhotonSocketState.Disconnected;
-			return true;
-		}
+			Any of the following could cause this:
+				* Il2CppInterop assemblies
+				* Deobfuscated assemblies
+				* Older assemblies (compared to when the bundle was built)
+				* Newer assemblies (compared to when the bundle was built)
 
-		public override PhotonSocketError Send(byte[] data, int length)
-		{
-			lock (syncer)
-			{
-				if (!sock.Connected)
-				{
-					return PhotonSocketError.Skipped;
-				}
-				try
-				{
-					sock.Send(data, 0, length, SocketFlags.None);
-				}
-				catch
-				{
-					return PhotonSocketError.Exception;
-				}
-			}
-			return PhotonSocketError.Success;
-		}
+			Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-		public override PhotonSocketError Receive(out byte[] data)
-		{
-			data = null;
-			return PhotonSocketError.NoData;
-		}
+		3. Assembly Reconstruction has not been implemented.
 
-		internal void DnsAndConnect()
-		{
-			try
-			{
-				lock (syncer)
-				{
-					sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-					IPAddress ipAddress = IPhotonSocket.GetIpAddress(base.ServerAddress);
-					sock.Connect(ipAddress, base.ServerPort);
-					base.State = PhotonSocketState.Connected;
-				}
-			}
-			catch (SecurityException ex)
-			{
-				if (ReportDebugOfLevel(DebugLevel.ERROR))
-				{
-					base.Listener.DebugReturn(DebugLevel.ERROR, "Connect() failed: " + ex.ToString());
-				}
-				HandleException(StatusCode.SecurityExceptionOnConnect);
-				return;
-			}
-			catch (Exception ex2)
-			{
-				if (ReportDebugOfLevel(DebugLevel.ERROR))
-				{
-					base.Listener.DebugReturn(DebugLevel.ERROR, "Connect() failed: " + ex2.ToString());
-				}
-				HandleException(StatusCode.ExceptionOnConnect);
-				return;
-			}
-			Thread thread = new Thread(ReceiveLoop);
-			thread.Name = "photon receive thread";
-			thread.IsBackground = true;
-			thread.Start();
-		}
+			Asset bundles contain a small amount of information about the script content.
+			This information can be used to recover the serializable fields of a script.
 
-		public void ReceiveLoop()
-		{
-			byte[] array = new byte[base.MTU];
-			while (base.State == PhotonSocketState.Connected)
-			{
-				try
-				{
-					int length = sock.Receive(array);
-					HandleReceivedDatagram(array, length, true);
-				}
-				catch (Exception ex)
-				{
-					if (base.State != PhotonSocketState.Disconnecting && base.State != 0)
-					{
-						if (ReportDebugOfLevel(DebugLevel.ERROR))
-						{
-							EnqueueDebugReturn(DebugLevel.ERROR, string.Concat("Receive issue. State: ", base.State, " Exception: ", ex));
-						}
-						HandleException(StatusCode.ExceptionOnReceive);
-					}
-				}
-			}
-			Disconnect();
-		}
+			See: https://github.com/AssetRipper/AssetRipper/issues/655
+	
+		4. This script is unnecessary.
+
+			If this script has no asset or script references, it can be deleted.
+			Be sure to resolve any compile errors before deleting because they can hide references.
+
+		5. Script Content Level 0
+
+			AssetRipper was set to not load any script information.
+
+		6. Cpp2IL failed to decompile Il2Cpp data
+
+			If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+			This is an upstream problem, and the AssetRipper developer has very little control over it.
+			Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+		7. An incorrect path was provided to AssetRipper.
+
+			This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+			AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+			An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+			Generally, AssetRipper expects users to provide the root folder of the game. For example:
+				* Windows: the folder containing the game's .exe file
+				* Mac: the .app file/folder
+				* Linux: the folder containing the game's executable file
+				* Android: the apk file
+				* iOS: the ipa file
+				* Switch: the folder containing exefs and romfs
+
+		*/
 	}
 }

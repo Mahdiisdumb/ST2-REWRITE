@@ -1,220 +1,63 @@
-using System.Reflection;
-using Photon;
 using UnityEngine;
 
-[AddComponentMenu("Miscellaneous/Photon View &v")]
-public class PhotonView : Photon.MonoBehaviour
+public class PhotonView : MonoBehaviour
 {
-	public int subId;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public int ownerId;
+	1. No dll files were provided to AssetRipper.
 
-	public int group;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	protected internal bool mixedModeIsReliable;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public int prefixBackup = -1;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private object[] instantiationDataField;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	protected internal object[] lastOnSerializeDataSent;
+	3. Assembly Reconstruction has not been implemented.
 
-	protected internal object[] lastOnSerializeDataReceived;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public Component observed;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public ViewSynchronization synchronization;
+	4. This script is unnecessary.
 
-	public OnSerializeTransform onSerializeTransformOption = OnSerializeTransform.PositionAndRotation;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public OnSerializeRigidBody onSerializeRigidBodyOption = OnSerializeRigidBody.All;
+	5. Script Content Level 0
 
-	public int instantiationId;
+		AssetRipper was set to not load any script information.
 
-	private bool didAwake;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	protected internal bool destroyedByPhotonNetworkOrQuit;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private MethodInfo OnSerializeMethodInfo;
+	7. An incorrect path was provided to AssetRipper.
 
-	private bool failedToFindOnSerialize;
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public int prefix
-	{
-		get
-		{
-			if (prefixBackup == -1 && PhotonNetwork.networkingPeer != null)
-			{
-				prefixBackup = PhotonNetwork.networkingPeer.currentLevelPrefix;
-			}
-			return prefixBackup;
-		}
-		set
-		{
-			prefixBackup = value;
-		}
-	}
-
-	public object[] instantiationData
-	{
-		get
-		{
-			if (!didAwake)
-			{
-				instantiationDataField = PhotonNetwork.networkingPeer.FetchInstantiationData(instantiationId);
-			}
-			return instantiationDataField;
-		}
-		set
-		{
-			instantiationDataField = value;
-		}
-	}
-
-	public int viewID
-	{
-		get
-		{
-			return ownerId * PhotonNetwork.MAX_VIEW_IDS + subId;
-		}
-		set
-		{
-			bool flag = didAwake && subId == 0;
-			ownerId = value / PhotonNetwork.MAX_VIEW_IDS;
-			subId = value % PhotonNetwork.MAX_VIEW_IDS;
-			if (flag)
-			{
-				PhotonNetwork.networkingPeer.RegisterPhotonView(this);
-			}
-		}
-	}
-
-	public bool isSceneView
-	{
-		get
-		{
-			return ownerId == 0;
-		}
-	}
-
-	public PhotonPlayer owner
-	{
-		get
-		{
-			return PhotonPlayer.Find(ownerId);
-		}
-	}
-
-	public int OwnerActorNr
-	{
-		get
-		{
-			return ownerId;
-		}
-	}
-
-	public bool isMine
-	{
-		get
-		{
-			return ownerId == PhotonNetwork.player.ID || (isSceneView && PhotonNetwork.isMasterClient);
-		}
-	}
-
-	public void Awake()
-	{
-		PhotonNetwork.networkingPeer.RegisterPhotonView(this);
-		instantiationDataField = PhotonNetwork.networkingPeer.FetchInstantiationData(instantiationId);
-		didAwake = true;
-	}
-
-	public void OnApplicationQuit()
-	{
-		destroyedByPhotonNetworkOrQuit = true;
-	}
-
-	public void OnDestroy()
-	{
-		if (!destroyedByPhotonNetworkOrQuit)
-		{
-			PhotonNetwork.networkingPeer.LocalCleanPhotonView(this);
-		}
-		if (!destroyedByPhotonNetworkOrQuit && !Application.isLoadingLevel)
-		{
-			if (instantiationId > 0)
-			{
-				Debug.LogError(string.Concat("OnDestroy() seems to be called without PhotonNetwork.Destroy()?! GameObject: ", base.gameObject, " Application.isLoadingLevel: ", Application.isLoadingLevel));
-			}
-			else if (viewID <= 0)
-			{
-				Debug.LogWarning(string.Format("OnDestroy manually allocated PhotonView {0}. The viewID is 0. Was it ever (manually) set?", this));
-			}
-			else if (isMine && !PhotonNetwork.manuallyAllocatedViewIds.Contains(viewID))
-			{
-				Debug.LogWarning(string.Format("OnDestroy manually allocated PhotonView {0}. The viewID is local (isMine) but not in manuallyAllocatedViewIds list. Use UnAllocateViewID() after you destroyed the PV.", this));
-			}
-		}
-		if (PhotonNetwork.networkingPeer.instantiatedObjects.ContainsKey(instantiationId))
-		{
-			GameObject gameObject = PhotonNetwork.networkingPeer.instantiatedObjects[instantiationId];
-			bool flag = gameObject == base.gameObject;
-			if (flag)
-			{
-				Debug.LogWarning(string.Format("OnDestroy for PhotonView {0} but GO is still in instantiatedObjects. instantiationId: {1}. Use PhotonNetwork.Destroy(). {2} Identical with this: {3} PN.Destroyed called for this PV: {4}", this, instantiationId, (!Application.isLoadingLevel) ? string.Empty : "Loading new scene caused this.", flag, destroyedByPhotonNetworkOrQuit));
-			}
-		}
-	}
-
-	protected internal void ExecuteOnSerialize(PhotonStream pStream, PhotonMessageInfo info)
-	{
-		if (!failedToFindOnSerialize)
-		{
-			if (OnSerializeMethodInfo == null && !NetworkingPeer.GetMethod(observed as UnityEngine.MonoBehaviour, PhotonNetworkingMessage.OnPhotonSerializeView.ToString(), out OnSerializeMethodInfo))
-			{
-				Debug.LogError("The observed monobehaviour (" + observed.name + ") of this PhotonView does not implement OnPhotonSerializeView()!");
-				failedToFindOnSerialize = true;
-			}
-			else
-			{
-				OnSerializeMethodInfo.Invoke(observed, new object[2] { pStream, info });
-			}
-		}
-	}
-
-	public void RPC(string methodName, PhotonTargets target, params object[] parameters)
-	{
-		if (PhotonNetwork.networkingPeer.hasSwitchedMC && target == PhotonTargets.MasterClient)
-		{
-			PhotonNetwork.RPC(this, methodName, PhotonNetwork.masterClient, parameters);
-		}
-		else
-		{
-			PhotonNetwork.RPC(this, methodName, target, parameters);
-		}
-	}
-
-	public void RPC(string methodName, PhotonPlayer targetPlayer, params object[] parameters)
-	{
-		PhotonNetwork.RPC(this, methodName, targetPlayer, parameters);
-	}
-
-	public static PhotonView Get(Component component)
-	{
-		return component.GetComponent<PhotonView>();
-	}
-
-	public static PhotonView Get(GameObject gameObj)
-	{
-		return gameObj.GetComponent<PhotonView>();
-	}
-
-	public static PhotonView Find(int viewID)
-	{
-		return PhotonNetwork.networkingPeer.GetPhotonView(viewID);
-	}
-
-	public override string ToString()
-	{
-		return string.Format("View ({3}){0} on {1} {2}", viewID, (!(base.gameObject != null)) ? "GO==null" : base.gameObject.name, (!isSceneView) ? string.Empty : "(scene)", prefix);
-	}
+	*/
 }

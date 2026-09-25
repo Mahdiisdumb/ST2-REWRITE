@@ -1,101 +1,63 @@
-using System;
-using System.Collections.Generic;
+using UnityEngine;
 
-public class PBitStream
+public class PBitStream : MonoBehaviour
 {
-	private List<byte> streamBytes;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private int currentByte;
+	1. No dll files were provided to AssetRipper.
 
-	private int totalBits;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public int ByteCount
-	{
-		get
-		{
-			return BytesForBits(totalBits);
-		}
-	}
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public int BitCount
-	{
-		get
-		{
-			return totalBits;
-		}
-		private set
-		{
-			totalBits = value;
-		}
-	}
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public int Position { get; set; }
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public PBitStream()
-	{
-		streamBytes = new List<byte>(1);
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	public PBitStream(int bitCount)
-	{
-		streamBytes = new List<byte>(BytesForBits(bitCount));
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public PBitStream(IEnumerable<byte> bytes, int bitCount)
-	{
-		streamBytes = new List<byte>(bytes);
-		BitCount = bitCount;
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public static int BytesForBits(int bitCount)
-	{
-		if (bitCount <= 0)
-		{
-			return 0;
-		}
-		return (bitCount - 1) / 8 + 1;
-	}
+	4. This script is unnecessary.
 
-	public void Add(bool val)
-	{
-		int num = totalBits / 8;
-		if (num > streamBytes.Count - 1 || totalBits == 0)
-		{
-			streamBytes.Add(0);
-		}
-		if (val)
-		{
-			int num2 = 7 - totalBits % 8;
-			streamBytes[num] |= (byte)(1 << num2);
-		}
-		totalBits++;
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public byte[] ToBytes()
-	{
-		return streamBytes.ToArray();
-	}
+	5. Script Content Level 0
 
-	public bool GetNext()
-	{
-		if (Position > totalBits)
-		{
-			throw new Exception("End of PBitStream reached. Can't read more.");
-		}
-		return Get(Position++);
-	}
+		AssetRipper was set to not load any script information.
 
-	public bool Get(int bitIndex)
-	{
-		int index = bitIndex / 8;
-		int num = 7 - bitIndex % 8;
-		return (streamBytes[index] & (byte)(1 << num)) > 0;
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public void Set(int bitIndex, bool value)
-	{
-		int index = bitIndex / 8;
-		int num = 7 - bitIndex % 8;
-		streamBytes[index] |= (byte)(1 << num);
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

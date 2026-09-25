@@ -1,122 +1,63 @@
-using System;
 using UnityEngine;
 
 public class HeadBobbing : MonoBehaviour
 {
-	public float bobbingFreq = 1.8f;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private float walkfeq;
+	1. No dll files were provided to AssetRipper.
 
-	private float runfeq;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	private float bobbingFreqCached;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public float bobbingRatio = 0.08f;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private float phase = (float)Math.PI;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	private CharacterMotor characterMotor;
+	3. Assembly Reconstruction has not been implemented.
 
-	private CharacterController characterController;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private float height;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private float bobbingAmount;
+	4. This script is unnecessary.
 
-	private float heightDependency;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private float currentBobbing;
+	5. Script Content Level 0
 
-	private float bobbingDelta;
+		AssetRipper was set to not load any script information.
 
-	private int stateMask;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private const int isWalking = 1;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private const int isStepping = 2;
+	7. An incorrect path was provided to AssetRipper.
 
-	private const int isStopping = 4;
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	private Vector3 OriginalCameraLocalPosition;
-
-	private void Awake()
-	{
-		walkfeq = bobbingFreq;
-		runfeq = bobbingFreq * 2f;
-	}
-
-	private void Start()
-	{
-		characterMotor = GetComponent<CharacterMotor>();
-		characterController = GetComponent<CharacterController>();
-		height = characterController.height;
-		OriginalCameraLocalPosition = Camera.main.transform.localPosition;
-		heightDependency = base.transform.localScale.y * height / 2f;
-		currentBobbing = 0f;
-		bobbingFreqCached = bobbingFreq;
-	}
-
-	private void Update()
-	{
-		if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-		{
-			bobbingFreq = runfeq;
-		}
-		else
-		{
-			bobbingFreq = walkfeq;
-		}
-		bobbingAmount = bobbingRatio * heightDependency;
-		if (characterMotor.inputMoveDirection != Vector3.zero && characterMotor.IsGrounded())
-		{
-			UpdatePhaseAndBobbingDelta();
-			stateMask |= 1;
-			stateMask &= -5;
-		}
-		else if ((stateMask & 1) > 0)
-		{
-			stateMask |= 4;
-			UpdatePhaseAndBobbingDelta((phase > 0f) ? 1 : (-1));
-			if ((stateMask & 2) > 0)
-			{
-				Camera.main.transform.localPosition = OriginalCameraLocalPosition;
-				stateMask &= -2;
-				phase = (float)Math.PI;
-			}
-		}
-		else
-		{
-			bobbingDelta = 0f;
-			stateMask = 0;
-		}
-		Camera.main.transform.Translate(Vector3.up * bobbingDelta, Space.World);
-	}
-
-	private void UpdatePhaseAndBobbingDelta()
-	{
-		UpdatePhaseAndBobbingDelta(1f);
-	}
-
-	private void UpdatePhaseAndBobbingDelta(float direction)
-	{
-		float num = (float)Math.PI * 2f;
-		float num2 = currentBobbing;
-		currentBobbing = (Mathf.Cos(phase) + 1f) * bobbingAmount;
-		bobbingDelta = currentBobbing - num2;
-		phase += direction * (num * Time.deltaTime * bobbingFreq);
-		if (Mathf.Abs(phase) > (float)Math.PI)
-		{
-			phase -= direction * num;
-			stateMask |= 2;
-		}
-		else
-		{
-			stateMask &= -3;
-		}
-	}
-
-	public bool getIsStepping()
-	{
-		return (2 & stateMask) > 0;
-	}
+	*/
 }

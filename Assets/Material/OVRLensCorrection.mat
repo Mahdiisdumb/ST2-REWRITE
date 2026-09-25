@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: OVRLensCorrection
-  m_Shader: {fileID: 4800000, guid: 9407361d31929e14381eacf2d1a347c4, type: 3}
+  m_Shader: {fileID: 4800000, guid: d7a767c7dca56f64ca37636aa3796d07, type: 3}
   m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -16,10 +16,6 @@ Material:
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: {}
     m_Floats: {}
     m_Colors: {}

@@ -2,97 +2,62 @@ using UnityEngine;
 
 public class Menu2OptionVideoApply : MonoBehaviour
 {
-	public Color overColor;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public Color exitColor;
+	1. No dll files were provided to AssetRipper.
 
-	private void Start()
-	{
-		base.gameObject.AddComponent<BoxCollider>();
-		int @int = PlayerPrefs.GetInt("qualitySettings");
-		int int2 = PlayerPrefs.GetInt("fullScreen");
-		int int3 = PlayerPrefs.GetInt("resolution");
-		QualitySettings.SetQualityLevel(@int);
-		int num = 0;
-		int num2 = 0;
-	}
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	private void OnMouseDown()
-	{
-		int @int = PlayerPrefs.GetInt("tmpQualitySettings");
-		int int2 = PlayerPrefs.GetInt("tmpFullScreen");
-		int int3 = PlayerPrefs.GetInt("tmpResolution");
-		PlayerPrefs.SetInt("qualitySettings", @int);
-		PlayerPrefs.SetInt("fullScreen", int2);
-		PlayerPrefs.SetInt("resolution", int3);
-		QualitySettings.SetQualityLevel(@int);
-		int width = 0;
-		int height = 0;
-		if (int3 == 0)
-		{
-			width = 640;
-			height = 480;
-		}
-		if (int3 == 1)
-		{
-			width = 800;
-			height = 480;
-		}
-		if (int3 == 2)
-		{
-			width = 800;
-			height = 600;
-		}
-		if (int3 == 3)
-		{
-			width = 1024;
-			height = 600;
-		}
-		if (int3 == 4)
-		{
-			width = 1024;
-			height = 768;
-		}
-		if (int3 == 5)
-		{
-			width = 1280;
-			height = 768;
-		}
-		if (int3 == 6)
-		{
-			width = 1280;
-			height = 960;
-		}
-		if (int3 == 7)
-		{
-			width = 1360;
-			height = 768;
-		}
-		if (int3 == 8)
-		{
-			width = 1366;
-			height = 768;
-		}
-		if (int3 == 9)
-		{
-			width = 1600;
-			height = 900;
-		}
-		bool fullscreen = false;
-		if (int2 == 1)
-		{
-			fullscreen = true;
-		}
-		Screen.SetResolution(width, height, fullscreen);
-	}
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private void OnMouseOver()
-	{
-		GetComponent<Renderer>().material.color = overColor;
-	}
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private void OnMouseExit()
-	{
-		GetComponent<Renderer>().material.color = exitColor;
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
+
+	3. Assembly Reconstruction has not been implemented.
+
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
+
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
+
+	4. This script is unnecessary.
+
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

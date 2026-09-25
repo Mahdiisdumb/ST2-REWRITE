@@ -17,15 +17,15 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 009d73e9445a63c48b6a5ac8983c99f4, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: ad1d12ca555452a4e90ffea16760c2c1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Cutoff: 0.07462687
-    - _Shininess: 0.8538086
-    - _SquashAmount: 1
+      _Cutoff: 0.07462687
+      _Shininess: 0.8538086
+      _SquashAmount: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Scale: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecColor: {r: 0.48507464, g: 0.48507464, b: 0.48507464, a: 1}
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _Scale: {r: 1, g: 1, b: 1, a: 1}
+      _SpecColor: {r: 0.48507464, g: 0.48507464, b: 0.48507464, a: 1}

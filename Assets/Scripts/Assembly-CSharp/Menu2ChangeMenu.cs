@@ -2,52 +2,62 @@ using UnityEngine;
 
 public class Menu2ChangeMenu : MonoBehaviour
 {
-	public string menu;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public Color overColor;
+	1. No dll files were provided to AssetRipper.
 
-	public Color exitColor;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public bool loadmap;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public bool issingleplayer;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public Texture2D image;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public GameObject preview;
+	3. Assembly Reconstruction has not been implemented.
 
-	private void Start()
-	{
-		base.gameObject.AddComponent<BoxCollider>();
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private void OnMouseDown()
-	{
-		GameObject.Find("root").GetComponent<Menu2Root>().Show(menu);
-		if (menu == "Online")
-		{
-			GameObject.Find("root").GetComponent<ServerSelect>().enabled = true;
-		}
-		if (issingleplayer && loadmap)
-		{
-			PlayerPrefs.SetString("gamemode", "TDM");
-			PhotonNetwork.offlineMode = true;
-			PhotonNetwork.CreateRoom("Singleplayer");
-			Application.LoadLevel(menu);
-		}
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private void OnMouseOver()
-	{
-		GetComponent<Renderer>().material.color = overColor;
-		if (issingleplayer && loadmap)
-		{
-			preview.GetComponent<Renderer>().material.mainTexture = image;
-		}
-	}
+	4. This script is unnecessary.
 
-	private void OnMouseExit()
-	{
-		GetComponent<Renderer>().material.color = exitColor;
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

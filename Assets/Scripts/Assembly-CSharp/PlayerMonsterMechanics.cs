@@ -1,83 +1,63 @@
-using System.Collections;
-using Photon;
 using UnityEngine;
 
-public class PlayerMonsterMechanics : Photon.MonoBehaviour
+public class PlayerMonsterMechanics : MonoBehaviour
 {
-	public bool attack;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public bool isattacking;
+	1. No dll files were provided to AssetRipper.
 
-	public GUIText textobj;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public Transform model;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public string walk = "run";
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public string idle = "idle";
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Vector3 oldpos;
+	3. Assembly Reconstruction has not been implemented.
 
-	private void Start()
-	{
-		if (base.photonView.isMine)
-		{
-			RenderSettings.fog = false;
-			RenderSettings.ambientLight = Color.gray;
-			textobj.transform.parent = null;
-			textobj.transform.localPosition = new Vector3(0.5f, 0.5f, 0f);
-		}
-		else
-		{
-			Object.Destroy(textobj.gameObject);
-		}
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private void Update()
-	{
-		if (oldpos != base.transform.position)
-		{
-			if (!isattacking)
-			{
-				model.GetComponent<Animation>().Play(walk);
-			}
-		}
-		else if (!isattacking)
-		{
-			model.GetComponent<Animation>().Play(idle);
-		}
-		if (attack && !isattacking)
-		{
-			StartCoroutine(Attacking());
-			isattacking = true;
-		}
-		if (base.photonView.isMine && Input.GetKeyDown(KeyCode.Mouse1) && !attack)
-		{
-			base.photonView.RPC("AttackNow", PhotonTargets.All);
-		}
-		oldpos = base.transform.position;
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private IEnumerator Attacking()
-	{
-		isattacking = true;
-		model.GetComponent<Animation>().Play("attack");
-		if (base.photonView.isMine)
-		{
-			textobj.enabled = true;
-		}
-		yield return new WaitForSeconds(2.5f);
-		if (base.photonView.isMine)
-		{
-			textobj.enabled = false;
-		}
-		isattacking = false;
-		attack = false;
-	}
+	4. This script is unnecessary.
 
-	[RPC]
-	private void AttackNow()
-	{
-		attack = true;
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

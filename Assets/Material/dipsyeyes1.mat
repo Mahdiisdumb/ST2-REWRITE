@@ -17,13 +17,13 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bb370a849ddb6df42bcbb8e3f91b68ae, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 09e5627742912fb4983f679cb0f029a0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Cutoff: 0.5
-    - _InvFade: 0.5194643
+      _Cutoff: 0.5
+      _InvFade: 0.5194643
     m_Colors:
-    - _Color: {r: 0.99264705, g: 0.99264705, b: 0.99264705, a: 0.47843137}
-    - _TintColor: {r: 1, g: 0, b: 0, a: 1}
+      _Color: {r: 0.99264705, g: 0.99264705, b: 0.99264705, a: 0.47843137}
+      _TintColor: {r: 1, g: 0, b: 0, a: 1}

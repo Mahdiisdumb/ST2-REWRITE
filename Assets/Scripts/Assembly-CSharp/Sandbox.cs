@@ -1,188 +1,63 @@
-using Photon;
 using UnityEngine;
 
-public class Sandbox : Photon.MonoBehaviour
+public class Sandbox : MonoBehaviour
 {
-	public int daytime;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public int music;
+	1. No dll files were provided to AssetRipper.
 
-	public int trees;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public int disco;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public Transform terrain;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public string commandbox;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Material daymat;
+	3. Assembly Reconstruction has not been implemented.
 
-	public Material nightmat;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public Transform sunlight;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public Color dayfog;
+	4. This script is unnecessary.
 
-	public Color nightfog;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public Color daycolor;
+	5. Script Content Level 0
 
-	public Color nightcolor;
+		AssetRipper was set to not load any script information.
 
-	public Color[] discocolors;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public AudioClip[] themusic;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private float treetot;
+	7. An incorrect path was provided to AssetRipper.
 
-	private void Start()
-	{
-		terrain = GameObject.Find("Terrain").transform;
-		sunlight = GameObject.Find("Directional light").transform;
-		if (terrain != null)
-		{
-			treetot = terrain.GetComponent<Terrain>().treeDistance;
-		}
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	private void Update()
-	{
-		if (daytime == 1 && disco == 0)
-		{
-			RenderSettings.skybox = daymat;
-			RenderSettings.fogColor = dayfog;
-			if (sunlight != null)
-			{
-				sunlight.gameObject.active = true;
-			}
-			RenderSettings.ambientLight = daycolor;
-		}
-		if (daytime == 2 && disco == 0)
-		{
-			RenderSettings.skybox = nightmat;
-			RenderSettings.fogColor = nightfog;
-			if (sunlight != null)
-			{
-				sunlight.gameObject.active = false;
-			}
-			RenderSettings.ambientLight = nightcolor;
-		}
-		if (disco == 1)
-		{
-			int num = Random.Range(0, 10);
-			int num2 = Random.Range(0, 15);
-			if (num2 == 1)
-			{
-				RenderSettings.ambientLight = discocolors[num];
-			}
-		}
-		if (trees == 0 && terrain != null)
-		{
-			terrain.GetComponent<Terrain>().treeDistance = treetot;
-		}
-		if (trees == 1 && terrain != null)
-		{
-			terrain.GetComponent<Terrain>().treeDistance = 0f;
-		}
-		if (music == 0)
-		{
-			GetComponent<AudioSource>().Stop();
-		}
-		if (music > 0)
-		{
-			GetComponent<AudioSource>().clip = themusic[music];
-			if (!GetComponent<AudioSource>().isPlaying)
-			{
-				GetComponent<AudioSource>().Play();
-			}
-		}
-		if (base.photonView.isMine && Input.GetKeyDown(KeyCode.K))
-		{
-			GameObject.Find("Mechanics").GetComponent<MultiplayerChat>().enabled = !GameObject.Find("Mechanics").GetComponent<MultiplayerChat>().enabled;
-		}
-	}
-
-	private void ChangeNow()
-	{
-		if (commandbox.Contains("time:0") && disco == 0)
-		{
-			daytime = 1;
-			RenderSettings.ambientLight = daycolor;
-		}
-		if (commandbox.Contains("time:1") && disco == 0)
-		{
-			daytime = 2;
-			RenderSettings.ambientLight = nightcolor;
-		}
-		if (commandbox.Contains("hidetrees:0"))
-		{
-			trees = 0;
-		}
-		if (commandbox.Contains("hidetrees:1"))
-		{
-			trees = 1;
-		}
-		if (commandbox.Contains("disco:0"))
-		{
-			disco = 0;
-		}
-		if (commandbox.Contains("disco:1"))
-		{
-			disco = 1;
-		}
-		if (commandbox.Contains("music:"))
-		{
-			string[] array = commandbox.Split(":"[0]);
-			int num = int.Parse(array[1]);
-			music = num;
-		}
-		if (commandbox.Contains("kick:"))
-		{
-			string[] array2 = commandbox.Split(":"[0]);
-			GameObject gameObject = GameObject.Find(array2[1]);
-			PhotonPlayer owner = gameObject.GetComponent<PhotonView>().owner;
-			PhotonNetwork.CloseConnection(owner);
-		}
-		if (commandbox.Contains("spawn:"))
-		{
-			string[] array3 = commandbox.Split(":"[0]);
-			PhotonNetwork.Instantiate(array3[1], base.transform.position, base.transform.rotation, 0);
-		}
-		if (commandbox.Contains("hostspawn:"))
-		{
-			string[] array4 = commandbox.Split(":"[0]);
-			PhotonNetwork.InstantiateSceneObject(array4[1], base.transform.position, base.transform.rotation, 0, null);
-		}
-	}
-
-	private void OnGUI()
-	{
-		if (base.photonView.isMine)
-		{
-			GUI.SetNextControlName("SandboxCommand");
-			commandbox = GUI.TextField(new Rect(Screen.width - 200, 0f, 200f, 30f), commandbox);
-			if (GUI.Button(new Rect(Screen.width - 100, 30f, 100f, 30f), "SEND"))
-			{
-				ChangeNow();
-			}
-		}
-	}
-
-	private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-	{
-		if (stream.isWriting)
-		{
-			stream.SendNext(daytime);
-			stream.SendNext(music);
-			stream.SendNext(trees);
-			stream.SendNext(disco);
-		}
-		else
-		{
-			daytime = (int)stream.ReceiveNext();
-			music = (int)stream.ReceiveNext();
-			trees = (int)stream.ReceiveNext();
-			disco = (int)stream.ReceiveNext();
-		}
-	}
+	*/
 }

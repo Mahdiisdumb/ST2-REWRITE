@@ -1,104 +1,63 @@
-using ExitGames.Client.Photon;
 using UnityEngine;
 
 public class PhotonStatsGui : MonoBehaviour
 {
-	public bool statsWindowOn = true;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public bool statsOn = true;
+	1. No dll files were provided to AssetRipper.
 
-	public bool healthStatsVisible;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public bool trafficStatsOn;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public bool buttonsOn;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public Rect statsRect = new Rect(0f, 100f, 200f, 50f);
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public int WindowId = 100;
+	3. Assembly Reconstruction has not been implemented.
 
-	public void Start()
-	{
-		statsRect.x = (float)Screen.width - statsRect.width;
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Tab) && Input.GetKey(KeyCode.LeftShift))
-		{
-			statsWindowOn = !statsWindowOn;
-			statsOn = true;
-		}
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public void OnGUI()
-	{
-		if (PhotonNetwork.networkingPeer.TrafficStatsEnabled != statsOn)
-		{
-			PhotonNetwork.networkingPeer.TrafficStatsEnabled = statsOn;
-		}
-		if (statsWindowOn)
-		{
-			statsRect = GUILayout.Window(WindowId, statsRect, TrafficStatsWindow, "Messages (shift+tab)");
-		}
-	}
+	4. This script is unnecessary.
 
-	public void TrafficStatsWindow(int windowID)
-	{
-		bool flag = false;
-		TrafficStatsGameLevel trafficStatsGameLevel = PhotonNetwork.networkingPeer.TrafficStatsGameLevel;
-		long num = PhotonNetwork.networkingPeer.TrafficStatsElapsedMs / 1000;
-		if (num == 0)
-		{
-			num = 1L;
-		}
-		GUILayout.BeginHorizontal();
-		buttonsOn = GUILayout.Toggle(buttonsOn, "buttons");
-		healthStatsVisible = GUILayout.Toggle(healthStatsVisible, "health");
-		trafficStatsOn = GUILayout.Toggle(trafficStatsOn, "traffic");
-		GUILayout.EndHorizontal();
-		string text = string.Format("Out|In|Sum:\t{0,4} | {1,4} | {2,4}", trafficStatsGameLevel.TotalOutgoingMessageCount, trafficStatsGameLevel.TotalIncomingMessageCount, trafficStatsGameLevel.TotalMessageCount);
-		string text2 = string.Format("{0}sec average:", num);
-		string text3 = string.Format("Out|In|Sum:\t{0,4} | {1,4} | {2,4}", trafficStatsGameLevel.TotalOutgoingMessageCount / num, trafficStatsGameLevel.TotalIncomingMessageCount / num, trafficStatsGameLevel.TotalMessageCount / num);
-		GUILayout.Label(text);
-		GUILayout.Label(text2);
-		GUILayout.Label(text3);
-		if (buttonsOn)
-		{
-			GUILayout.BeginHorizontal();
-			statsOn = GUILayout.Toggle(statsOn, "stats on");
-			if (GUILayout.Button("Reset"))
-			{
-				PhotonNetwork.networkingPeer.TrafficStatsReset();
-				PhotonNetwork.networkingPeer.TrafficStatsEnabled = true;
-			}
-			flag = GUILayout.Button("To Log");
-			GUILayout.EndHorizontal();
-		}
-		string text4 = string.Empty;
-		string text5 = string.Empty;
-		if (trafficStatsOn)
-		{
-			text4 = "Incoming: " + PhotonNetwork.networkingPeer.TrafficStatsIncoming.ToString();
-			text5 = "Outgoing: " + PhotonNetwork.networkingPeer.TrafficStatsOutgoing.ToString();
-			GUILayout.Label(text4);
-			GUILayout.Label(text5);
-		}
-		string text6 = string.Empty;
-		if (healthStatsVisible)
-		{
-			text6 = string.Format("ping: {6}[+/-{7}]ms\nlongest delta between\nsend: {0,4}ms disp: {1,4}ms\nlongest time for:\nev({3}):{2,3}ms op({5}):{4,3}ms", trafficStatsGameLevel.LongestDeltaBetweenSending, trafficStatsGameLevel.LongestDeltaBetweenDispatching, trafficStatsGameLevel.LongestEventCallback, trafficStatsGameLevel.LongestEventCallbackCode, trafficStatsGameLevel.LongestOpResponseCallback, trafficStatsGameLevel.LongestOpResponseCallbackOpCode, PhotonNetwork.networkingPeer.RoundTripTime, PhotonNetwork.networkingPeer.RoundTripTimeVariance);
-			GUILayout.Label(text6);
-		}
-		if (flag)
-		{
-			string message = string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}", text, text2, text3, text4, text5, text6);
-			Debug.Log(message);
-		}
-		if (GUI.changed)
-		{
-			statsRect.height = 100f;
-		}
-		GUI.DragWindow();
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

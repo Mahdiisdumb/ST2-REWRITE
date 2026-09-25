@@ -1,357 +1,66 @@
-using System;
-using System.IO;
-using System.Reflection;
-using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 namespace CodeStage.AntiCheat.Detectors
 {
-	[AddComponentMenu("Code Stage/Anti-Cheat Toolkit/Injection Detector")]
-	public class InjectionDetector : ActDetectorBase
+	public class InjectionDetector : MonoBehaviour
 	{
-		private class AllowedAssembly
-		{
-			public readonly string name;
+		/*
+		Dummy class. This could have happened for several reasons:
 
-			public readonly int[] hashes;
+		1. No dll files were provided to AssetRipper.
 
-			public AllowedAssembly(string name, int[] hashes)
-			{
-				this.name = name;
-				this.hashes = hashes;
-			}
-		}
+			Unity asset bundles and serialized files do not contain script information to decompile.
+				* For Mono games, that information is contained in .NET dll files.
+				* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+				
+			AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+			A unexpected file structure could cause AssetRipper to not find the required files.
 
-		internal const string COMPONENT_NAME = "Injection Detector";
+		2. Incorrect dll files were provided to AssetRipper.
 
-		internal const string FINAL_LOG_PREFIX = "[ACTk] Injection Detector: ";
+			Any of the following could cause this:
+				* Il2CppInterop assemblies
+				* Deobfuscated assemblies
+				* Older assemblies (compared to when the bundle was built)
+				* Newer assemblies (compared to when the bundle was built)
 
-		protected UnityAction<string> detectionActionWithArgument;
+			Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-		private static int instancesInScene;
+		3. Assembly Reconstruction has not been implemented.
 
-		private bool signaturesAreNotGenuine;
+			Asset bundles contain a small amount of information about the script content.
+			This information can be used to recover the serializable fields of a script.
 
-		private AllowedAssembly[] allowedAssemblies;
+			See: https://github.com/AssetRipper/AssetRipper/issues/655
+	
+		4. This script is unnecessary.
 
-		private string[] hexTable;
+			If this script has no asset or script references, it can be deleted.
+			Be sure to resolve any compile errors before deleting because they can hide references.
 
-		public static InjectionDetector Instance { get; private set; }
+		5. Script Content Level 0
 
-		private static InjectionDetector GetOrCreateInstance
-		{
-			get
-			{
-				if (Instance != null)
-				{
-					return Instance;
-				}
-				if (ActDetectorBase.detectorsContainer == null)
-				{
-					ActDetectorBase.detectorsContainer = new GameObject("Anti-Cheat Toolkit Detectors");
-				}
-				Instance = ActDetectorBase.detectorsContainer.AddComponent<InjectionDetector>();
-				return Instance;
-			}
-		}
+			AssetRipper was set to not load any script information.
 
-		private InjectionDetector()
-		{
-		}
+		6. Cpp2IL failed to decompile Il2Cpp data
 
-		public static void StartDetection()
-		{
-			if (Instance != null)
-			{
-				Instance.StartDetectionInternal(null, null);
-			}
-			else
-			{
-				Debug.LogError("[ACTk] Injection Detector: can't be started since it doesn't exists in scene or not yet initialized!");
-			}
-		}
+			If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+			This is an upstream problem, and the AssetRipper developer has very little control over it.
+			Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-		public static void StartDetection(UnityAction callback)
-		{
-			GetOrCreateInstance.StartDetectionInternal(callback, null);
-		}
+		7. An incorrect path was provided to AssetRipper.
 
-		public static void StartDetection(UnityAction<string> callback)
-		{
-			GetOrCreateInstance.StartDetectionInternal(null, callback);
-		}
+			This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+			AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+			An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+			Generally, AssetRipper expects users to provide the root folder of the game. For example:
+				* Windows: the folder containing the game's .exe file
+				* Mac: the .app file/folder
+				* Linux: the folder containing the game's executable file
+				* Android: the apk file
+				* iOS: the ipa file
+				* Switch: the folder containing exefs and romfs
 
-		public static void StopDetection()
-		{
-			if (Instance != null)
-			{
-				Instance.StopDetectionInternal();
-			}
-		}
-
-		public static void Dispose()
-		{
-			if (Instance != null)
-			{
-				Instance.DisposeInternal();
-			}
-		}
-
-		private void Awake()
-		{
-			instancesInScene++;
-			if (Init(Instance, "Injection Detector"))
-			{
-				Instance = this;
-			}
-			SceneManager.sceneLoaded += OnLevelWasLoadedNew;
-		}
-
-		protected override void OnDestroy()
-		{
-			base.OnDestroy();
-			instancesInScene--;
-		}
-
-		private void OnLevelWasLoadedNew(Scene scene, LoadSceneMode mode)
-		{
-			OnLevelLoadedCallback();
-		}
-
-		private void OnLevelLoadedCallback()
-		{
-			if (instancesInScene < 2)
-			{
-				if (!keepAlive)
-				{
-					DisposeInternal();
-				}
-			}
-			else if (!keepAlive && Instance != this)
-			{
-				DisposeInternal();
-			}
-		}
-
-		private void StartDetectionInternal(UnityAction callback, UnityAction<string> callbackWithArgument)
-		{
-			if (isRunning)
-			{
-				Debug.LogWarning("[ACTk] Injection Detector: already running!", this);
-				return;
-			}
-			if (!base.enabled)
-			{
-				Debug.LogWarning("[ACTk] Injection Detector: disabled but StartDetection still called from somewhere (see stack trace for this message)!", this);
-				return;
-			}
-			if (callback != null && detectionEventHasListener)
-			{
-				Debug.LogWarning("[ACTk] Injection Detector: has properly configured Detection Event in the inspector, but still get started with Action callback. Both Action and Detection Event will be called on detection. Are you sure you wish to do this?", this);
-			}
-			if (callback == null && !detectionEventHasListener)
-			{
-				Debug.LogWarning("[ACTk] Injection Detector: was started without any callbacks. Please configure Detection Event in the inspector, or pass the callback Action to the StartDetection method.", this);
-				base.enabled = false;
-				return;
-			}
-			detectionAction = callback;
-			detectionActionWithArgument = callbackWithArgument;
-			started = true;
-			isRunning = true;
-			if (allowedAssemblies == null)
-			{
-				LoadAndParseAllowedAssemblies();
-			}
-			string cause;
-			if (signaturesAreNotGenuine)
-			{
-				OnCheatingDetected("signatures");
-			}
-			else if (!FindInjectionInCurrentAssemblies(out cause))
-			{
-				AppDomain.CurrentDomain.AssemblyLoad += OnNewAssemblyLoaded;
-			}
-			else
-			{
-				OnCheatingDetected(cause);
-			}
-		}
-
-		protected override void StartDetectionAutomatically()
-		{
-			StartDetectionInternal(null, null);
-		}
-
-		protected override void PauseDetector()
-		{
-			isRunning = false;
-			AppDomain.CurrentDomain.AssemblyLoad -= OnNewAssemblyLoaded;
-		}
-
-		protected override void ResumeDetector()
-		{
-			if (detectionAction != null || detectionActionWithArgument != null || detectionEventHasListener)
-			{
-				isRunning = true;
-				AppDomain.CurrentDomain.AssemblyLoad += OnNewAssemblyLoaded;
-			}
-		}
-
-		protected override void StopDetectionInternal()
-		{
-			if (started)
-			{
-				AppDomain.CurrentDomain.AssemblyLoad -= OnNewAssemblyLoaded;
-				detectionAction = null;
-				detectionActionWithArgument = null;
-				started = false;
-				isRunning = false;
-			}
-		}
-
-		protected override void DisposeInternal()
-		{
-			base.DisposeInternal();
-			if (Instance == this)
-			{
-				Instance = null;
-			}
-		}
-
-		private void OnCheatingDetected(string cause)
-		{
-			if (detectionActionWithArgument != null)
-			{
-				detectionActionWithArgument(cause);
-			}
-			base.OnCheatingDetected();
-		}
-
-		private void OnNewAssemblyLoaded(object sender, AssemblyLoadEventArgs args)
-		{
-			if (!AssemblyAllowed(args.LoadedAssembly))
-			{
-				OnCheatingDetected(args.LoadedAssembly.FullName);
-			}
-		}
-
-		private bool FindInjectionInCurrentAssemblies(out string cause)
-		{
-			cause = null;
-			bool result = false;
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			if (assemblies.Length == 0)
-			{
-				cause = "no assemblies";
-				result = true;
-			}
-			else
-			{
-				Assembly[] array = assemblies;
-				foreach (Assembly assembly in array)
-				{
-					if (!AssemblyAllowed(assembly))
-					{
-						cause = assembly.FullName;
-						result = true;
-						break;
-					}
-				}
-			}
-			return result;
-		}
-
-		private bool AssemblyAllowed(Assembly ass)
-		{
-			string text = ass.GetName().Name;
-			int assemblyHash = GetAssemblyHash(ass);
-			bool result = false;
-			for (int i = 0; i < allowedAssemblies.Length; i++)
-			{
-				AllowedAssembly allowedAssembly = allowedAssemblies[i];
-				if (allowedAssembly.name == text && Array.IndexOf(allowedAssembly.hashes, assemblyHash) != -1)
-				{
-					result = true;
-					break;
-				}
-			}
-			return result;
-		}
-
-		private void LoadAndParseAllowedAssemblies()
-		{
-			TextAsset textAsset = (TextAsset)Resources.Load("fndid", typeof(TextAsset));
-			if (textAsset == null)
-			{
-				signaturesAreNotGenuine = true;
-				return;
-			}
-			string[] separator = new string[1] { ":" };
-			MemoryStream memoryStream = new MemoryStream(textAsset.bytes);
-			BinaryReader binaryReader = new BinaryReader(memoryStream);
-			int num = binaryReader.ReadInt32();
-			allowedAssemblies = new AllowedAssembly[num];
-			for (int i = 0; i < num; i++)
-			{
-				string value = binaryReader.ReadString();
-				value = ObscuredString.EncryptDecrypt(value, "Elina");
-				string[] array = value.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-				int num2 = array.Length;
-				if (num2 > 1)
-				{
-					string text = array[0];
-					int[] array2 = new int[num2 - 1];
-					for (int j = 1; j < num2; j++)
-					{
-						array2[j - 1] = int.Parse(array[j]);
-					}
-					allowedAssemblies[i] = new AllowedAssembly(text, array2);
-					continue;
-				}
-				signaturesAreNotGenuine = true;
-				binaryReader.Close();
-				memoryStream.Close();
-				return;
-			}
-			binaryReader.Close();
-			memoryStream.Close();
-			Resources.UnloadAsset(textAsset);
-			hexTable = new string[256];
-			for (int k = 0; k < 256; k++)
-			{
-				hexTable[k] = k.ToString("x2");
-			}
-		}
-
-		private int GetAssemblyHash(Assembly ass)
-		{
-			AssemblyName assemblyName = ass.GetName();
-			byte[] publicKeyToken = assemblyName.GetPublicKeyToken();
-			string text = ((publicKeyToken.Length < 8) ? assemblyName.Name : (assemblyName.Name + PublicKeyTokenToString(publicKeyToken)));
-			int num = 0;
-			int length = text.Length;
-			for (int i = 0; i < length; i++)
-			{
-				num += text[i];
-				num += num << 10;
-				num ^= num >> 6;
-			}
-			num += num << 3;
-			num ^= num >> 11;
-			return num + (num << 15);
-		}
-
-		private string PublicKeyTokenToString(byte[] bytes)
-		{
-			string text = string.Empty;
-			for (int i = 0; i < 8; i++)
-			{
-				text += hexTable[bytes[i]];
-			}
-			return text;
-		}
+		*/
 	}
 }

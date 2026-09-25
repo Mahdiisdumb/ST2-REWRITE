@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Optimized Leaf Material_9
   m_Shader: {fileID: 10605, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
+  m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_CustomRenderQueue: -1
@@ -17,31 +17,31 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpSpecMap:
-        m_Texture: {fileID: 2800000, guid: 95faa2fd49c061844b5317dcde01964c, type: 3}
+      _BumpSpecMap:
+        m_Texture: {fileID: 2800000, guid: d43fda9cbb64640409732d69d29257d5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 100b3c4abba8aad48ad75ac66c36c925, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 85c347650c32c10408e3aaa9f6744809, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ShadowTex:
-        m_Texture: {fileID: 2800000, guid: 2334ed0723916534bb411906d892a448, type: 3}
+      _ShadowTex:
+        m_Texture: {fileID: 2800000, guid: 8fc2694394b5c574996c3ace168c2f39, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _TranslucencyMap:
-        m_Texture: {fileID: 2800000, guid: 8f586dc31ea3e4140a8c79c4ff47654d, type: 3}
+      _TranslucencyMap:
+        m_Texture: {fileID: 2800000, guid: fef533cac4da5294caf627e8fc0b0911, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Cutoff: 0.343
-    - _ShadowOffsetScale: 1
-    - _ShadowStrength: 0.8
-    - _SquashAmount: 1
-    - _TranslucencyViewDependency: 0.7
+      _Cutoff: 0.343
+      _ShadowOffsetScale: 1
+      _ShadowStrength: 0.8
+      _SquashAmount: 1
+      _TranslucencyViewDependency: 0.7
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Scale: {r: 1, g: 1, b: 1, a: 1}
-    - _TranslucencyColor: {r: 0.07462686, g: 0.06520991, b: 0.052907106, a: 1}
-    - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _Scale: {r: 1, g: 1, b: 1, a: 1}
+      _TranslucencyColor: {r: 0.07462686, g: 0.06520991, b: 0.052907106, a: 1}
+      _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
+      _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}

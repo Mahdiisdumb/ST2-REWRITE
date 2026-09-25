@@ -17,33 +17,33 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BackTex:
-        m_Texture: {fileID: 2800000, guid: 4a8c7d643f7e17342aff36e28662577e, type: 3}
+      _BackTex:
+        m_Texture: {fileID: 2800000, guid: c56e2c73effb685468a016f1d03020e5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _DownTex:
-        m_Texture: {fileID: 2800000, guid: bb8d7de5453a4a94a980fe66ac8de35e, type: 3}
+      _DownTex:
+        m_Texture: {fileID: 2800000, guid: 8c5ca6667d5dc1249b7b05fc9c53203b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _FrontTex:
-        m_Texture: {fileID: 2800000, guid: 86f2de44797845948b6d3e19a3d73531, type: 3}
+      _FrontTex:
+        m_Texture: {fileID: 2800000, guid: 13af6cfaf0b61794788666dbf2db2865, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _LeftTex:
-        m_Texture: {fileID: 2800000, guid: 86f2de44797845948b6d3e19a3d73531, type: 3}
+      _LeftTex:
+        m_Texture: {fileID: 2800000, guid: 13af6cfaf0b61794788666dbf2db2865, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _RightTex:
-        m_Texture: {fileID: 2800000, guid: 86f2de44797845948b6d3e19a3d73531, type: 3}
+      _RightTex:
+        m_Texture: {fileID: 2800000, guid: 13af6cfaf0b61794788666dbf2db2865, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 1, y: 0}
-    - _UpTex:
-        m_Texture: {fileID: 2800000, guid: 79f97cbbec0c59d46b96dc58b0f07612, type: 3}
+      _UpTex:
+        m_Texture: {fileID: 2800000, guid: b504ac66c1c01104fa15a4d3a0819154, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Exposure: 1
-    - _Rotation: 0
+      _Exposure: 1
+      _Rotation: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Tint: {r: 0.36764705, g: 0.36764705, b: 0.36764705, a: 0.5019608}
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _Tint: {r: 0.36764705, g: 0.36764705, b: 0.36764705, a: 0.5019608}

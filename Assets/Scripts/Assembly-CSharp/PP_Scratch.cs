@@ -1,48 +1,63 @@
 using UnityEngine;
 
-[ExecuteInEditMode]
-[AddComponentMenu("Image Effects/Aubergine/Scratch")]
-public class PP_Scratch : PostProcessBase
+public class PP_Scratch : MonoBehaviour
 {
-	public Texture noiseTexture;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public float speed1 = 0.03f;
+	1. No dll files were provided to AssetRipper.
 
-	public float speed2 = 0.01f;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public float intensity = 0.5f;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public float scratchWidth = 0.01f;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private void Awake()
-	{
-		if ((bool)noiseTexture)
-		{
-			base.material.SetTexture("_Noise", noiseTexture);
-		}
-		base.material.SetTexture("_Noise", noiseTexture);
-		base.material.SetFloat("_Speed1", speed1);
-		base.material.SetFloat("_Speed2", speed2);
-		base.material.SetFloat("_Intensity", intensity);
-		base.material.SetFloat("_ScratchWidth", scratchWidth);
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	private void OnEnable()
-	{
-		if (!noiseTexture)
-		{
-			Debug.LogWarning("You must set the noiseTexture Texture");
-		}
-		shader = Shader.Find("Hidden/Aubergine/Scratch");
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	private void OnRenderImage(RenderTexture source, RenderTexture destination)
-	{
-		base.material.SetTexture("_Noise", noiseTexture);
-		base.material.SetFloat("_Speed1", speed1);
-		base.material.SetFloat("_Speed2", speed2);
-		base.material.SetFloat("_Intensity", intensity);
-		base.material.SetFloat("_ScratchWidth", scratchWidth);
-		Graphics.Blit(source, destination, base.material);
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
+
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
+
+	4. This script is unnecessary.
+
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

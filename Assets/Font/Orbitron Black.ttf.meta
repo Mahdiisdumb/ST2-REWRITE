@@ -1,10 +1,24 @@
 fileFormatVersion: 2
-guid: a43885871cf2c2043bf48eb6ff760fd3
-timeCreated: 1673473436
+guid: 05901318efb352d40ab98dcd7ebc6384
+timeCreated: 1790373884
 licenseType: Free
-NativeFormatImporter:
+TrueTypeFontImporter:
+  serializedVersion: 4
   name:
-  mainObjectFileID: 12800000
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Orbitron
+  fontNames:
+  - Orbitron
+  fallbackFontReferences: []
+  customCharacters:
+  fontRenderingMode: 0
+  output:
+    hasEmptyFontData: 0
+  ascentCalculationMode: 1
   userData:
   assetBundleName:
   assetBundleVariant:

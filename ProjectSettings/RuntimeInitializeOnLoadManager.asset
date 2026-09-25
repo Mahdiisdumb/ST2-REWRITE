@@ -18,9 +18,8 @@ RuntimeInitializeOnLoadManager:
   - m_ClassIndex: 0
     m_MethodName: EditorOnLoad
     m_OrderNumber: 0
-  m_BeforeUnityMethodExecutionOrders:
-  - 0
-  m_AfterUnityMethodExecutionOrders: []
-  m_BeforeMethodExecutionOrders: []
-  m_AfterMethodExecutionOrders: []
+  m_BeforeUnityMethodExecutionOrders: 00000000
+  m_AfterUnityMethodExecutionOrders:
+  m_BeforeMethodExecutionOrders:
+  m_AfterMethodExecutionOrders:
   m_FullClassNames: []

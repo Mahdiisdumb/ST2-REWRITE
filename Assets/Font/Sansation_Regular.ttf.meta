@@ -1,10 +1,24 @@
 fileFormatVersion: 2
-guid: 916ca4965f9cd05499df143af597bdb6
-timeCreated: 1673473439
+guid: bc455f4018fe5934982114670fc01dc1
+timeCreated: 1790373882
 licenseType: Free
-NativeFormatImporter:
+TrueTypeFontImporter:
+  serializedVersion: 4
   name:
-  mainObjectFileID: 12800000
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Sansation
+  fontNames:
+  - Sansation
+  fallbackFontReferences: []
+  customCharacters:
+  fontRenderingMode: 0
+  output:
+    hasEmptyFontData: 0
+  ascentCalculationMode: 1
   userData:
   assetBundleName:
   assetBundleVariant:

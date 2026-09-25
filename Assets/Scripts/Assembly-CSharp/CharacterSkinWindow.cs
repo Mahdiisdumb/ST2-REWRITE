@@ -2,116 +2,62 @@ using UnityEngine;
 
 public class CharacterSkinWindow : MonoBehaviour
 {
-	public GUISkin guiSkin;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public string cs = "Character Custom Skin";
+	1. No dll files were provided to AssetRipper.
 
-	public string hat = "Hat Texture";
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public string head = "Head Texture";
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public string body = "Body Texture";
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public string arms = "Arms Texture";
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public string legs = "Legs Texture";
+	3. Assembly Reconstruction has not been implemented.
 
-	public new string enabled = "Enabled";
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public string disabled = "Disabled";
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public string accept = "Accept";
+	4. This script is unnecessary.
 
-	public string gms = "Get More Skins";
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public string haturl;
+	5. Script Content Level 0
 
-	public string headurl;
+		AssetRipper was set to not load any script information.
 
-	public string bodyurl;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public string armsurl;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public string legsurl;
+	7. An incorrect path was provided to AssetRipper.
 
-	public int isenabled;
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public bool showwindow;
-
-	private void Awake()
-	{
-		haturl = PlayerPrefs.GetString("haturl");
-		headurl = PlayerPrefs.GetString("headurl");
-		bodyurl = PlayerPrefs.GetString("bodyurl");
-		armsurl = PlayerPrefs.GetString("armsurl");
-		legsurl = PlayerPrefs.GetString("legsurl");
-		isenabled = PlayerPrefs.GetInt("CS");
-		if (PlayerPrefs.GetInt("language") == 1)
-		{
-			cs = "Skin Customizable del Personaje";
-			hat = "Gorro";
-			head = "Cabeza";
-			body = "Cuerpo";
-			arms = "Brazos";
-			legs = "Piernas";
-			accept = "Aceptar";
-			enabled = "Encendido";
-			disabled = "Desactivado";
-			gms = "Obtener más skins";
-		}
-	}
-
-	private void OnGUI()
-	{
-		GUI.skin = guiSkin;
-		if (GUI.Button(new Rect(Screen.width - 300, Screen.height - 40, 300f, 40f), cs))
-		{
-			showwindow = !showwindow;
-		}
-		GUI.skin = null;
-		if (showwindow)
-		{
-			Rect clientRect = new Rect(Screen.width - 310, 20f, 300f, 370f);
-			clientRect = GUI.Window(0, clientRect, DoMyWindow, cs);
-		}
-	}
-
-	private void DoMyWindow(int windowID)
-	{
-		GUI.Label(new Rect(10f, 20f, 100f, 20f), hat);
-		haturl = GUI.TextField(new Rect(10f, 40f, 280f, 20f), haturl);
-		GUI.Label(new Rect(10f, 70f, 100f, 20f), head);
-		headurl = GUI.TextField(new Rect(10f, 90f, 280f, 20f), headurl);
-		GUI.Label(new Rect(10f, 120f, 100f, 20f), body);
-		bodyurl = GUI.TextField(new Rect(10f, 140f, 280f, 20f), bodyurl);
-		GUI.Label(new Rect(10f, 170f, 100f, 20f), arms);
-		armsurl = GUI.TextField(new Rect(10f, 190f, 280f, 20f), armsurl);
-		GUI.Label(new Rect(10f, 220f, 100f, 20f), legs);
-		legsurl = GUI.TextField(new Rect(10f, 240f, 280f, 20f), legsurl);
-		if (isenabled != 2)
-		{
-			if (GUI.Button(new Rect(10f, 280f, 280f, 30f), disabled))
-			{
-				isenabled = 2;
-			}
-		}
-		else if (GUI.Button(new Rect(10f, 280f, 280f, 30f), enabled))
-		{
-			isenabled = 0;
-		}
-		if (GUI.Button(new Rect(10f, 310f, 280f, 20f), gms))
-		{
-			Application.OpenURL("http://zeoworks.com/home/forum-17.html");
-		}
-		if (GUI.Button(new Rect(10f, 330f, 280f, 30f), accept))
-		{
-			PlayerPrefs.SetString("haturl", haturl);
-			PlayerPrefs.SetString("headurl", headurl);
-			PlayerPrefs.SetString("bodyurl", bodyurl);
-			PlayerPrefs.SetString("armsurl", armsurl);
-			PlayerPrefs.SetString("legsurl", legsurl);
-			PlayerPrefs.SetInt("CS", isenabled);
-			showwindow = false;
-		}
-	}
+	*/
 }

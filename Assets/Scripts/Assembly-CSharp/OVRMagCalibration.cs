@@ -1,175 +1,63 @@
 using UnityEngine;
 
-public class OVRMagCalibration
+public class OVRMagCalibration : MonoBehaviour
 {
-	public enum MagCalibrationState
-	{
-		MagUncalibrated = 0,
-		MagDisabled = 1,
-		MagReady = 2
-	}
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private MagCalibrationState MagCalState;
+	1. No dll files were provided to AssetRipper.
 
-	private Vector3 CurEulerRef = Vector3.zero;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	private bool MagShowGeometry;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public OVRCameraController CameraController;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public GameObject GeometryReference;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public GameObject GeometryCompass;
+	3. Assembly Reconstruction has not been implemented.
 
-	public Material GeometryReferenceMarkMat;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public void SetInitialCalibarationState()
-	{
-		if (OVRDevice.IsMagCalibrated(0) && OVRDevice.IsYawCorrectionEnabled(0))
-		{
-			MagCalState = MagCalibrationState.MagReady;
-		}
-		else
-		{
-			MagCalState = MagCalibrationState.MagUncalibrated;
-		}
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public void SetOVRCameraController(ref OVRCameraController cameraController)
-	{
-		CameraController = cameraController;
-	}
+	4. This script is unnecessary.
 
-	public void ShowGeometry(bool show)
-	{
-		if (GeometryReference == null)
-		{
-			GeometryReference = Object.Instantiate(Resources.Load("OVRMagReference")) as GameObject;
-			GeometryReferenceMarkMat = GeometryReference.transform.Find("Mark").GetComponent<Renderer>().material;
-		}
-		if (GeometryReference != null)
-		{
-			GeometryReference.SetActive(show);
-			AttachGeometryToCamera(show, ref GeometryReference);
-		}
-		if (GeometryCompass == null)
-		{
-			GeometryCompass = Object.Instantiate(Resources.Load("OVRMagCompass")) as GameObject;
-		}
-		if (GeometryCompass != null)
-		{
-			GeometryCompass.SetActive(show);
-			AttachGeometryToCamera(show, ref GeometryCompass);
-		}
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public void AttachGeometryToCamera(bool attach, ref GameObject go)
-	{
-		if (CameraController != null && attach)
-		{
-			CameraController.AttachGameObjectToCamera(ref go);
-			OVRUtils.SetLocalTransformIdentity(ref go);
-			Vector3 localPosition = go.transform.localPosition;
-			float ipd = 0f;
-			CameraController.GetIPD(ref ipd);
-			localPosition.x -= ipd * 0.5f;
-			go.transform.localPosition = localPosition;
-		}
-	}
+	5. Script Content Level 0
 
-	public void UpdateGeometry()
-	{
-		if (MagShowGeometry && !(CameraController == null) && !(GeometryReference == null) && !(GeometryCompass == null))
-		{
-			Quaternion q = Quaternion.identity;
-			if (CameraController != null && CameraController.PredictionOn)
-			{
-				OVRDevice.GetPredictedOrientation(0, ref q);
-			}
-			else
-			{
-				OVRDevice.GetOrientation(0, ref q);
-			}
-			Vector3 localEulerAngles = GeometryCompass.transform.localEulerAngles;
-			localEulerAngles.y = 0f - q.eulerAngles.y + CurEulerRef.y;
-			GeometryCompass.transform.localEulerAngles = localEulerAngles;
-			if (GeometryReferenceMarkMat != null)
-			{
-				Color red = Color.red;
-				GeometryReferenceMarkMat.SetColor("_Color", red);
-			}
-		}
-	}
+		AssetRipper was set to not load any script information.
 
-	public void UpdateMagYawDriftCorrection()
-	{
-		if (MagCalState == MagCalibrationState.MagUncalibrated)
-		{
-			return;
-		}
-		if (MagCalState == MagCalibrationState.MagReady)
-		{
-			if (Input.GetKeyDown(KeyCode.X))
-			{
-				MagCalState = MagCalibrationState.MagDisabled;
-				OVRDevice.EnableMagYawCorrection(0, false);
-				MagShowGeometry = false;
-				ShowGeometry(MagShowGeometry);
-			}
-			else if (Input.GetKeyDown(KeyCode.F6))
-			{
-				if (!MagShowGeometry)
-				{
-					MagShowGeometry = true;
-					ShowGeometry(MagShowGeometry);
-				}
-				else
-				{
-					MagShowGeometry = false;
-					ShowGeometry(MagShowGeometry);
-				}
-			}
-			UpdateGeometry();
-		}
-		else if (MagCalState == MagCalibrationState.MagDisabled && Input.GetKeyDown(KeyCode.X))
-		{
-			MagCalState = MagCalibrationState.MagReady;
-			EnableYawCorrection(0);
-		}
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public void GUIMagYawDriftCorrection(int xLoc, int yLoc, int xWidth, int yWidth, ref OVRGUI guiHelper)
-	{
-		string text = string.Empty;
-		Color red = Color.red;
-		switch (MagCalState)
-		{
-		case MagCalibrationState.MagUncalibrated:
-			text = "Mag Uncalibrated";
-			break;
-		case MagCalibrationState.MagDisabled:
-			text = "Mag Calibration OFF";
-			break;
-		case MagCalibrationState.MagReady:
-			text = "Mag Correction ON";
-			red = Color.red;
-			break;
-		}
-		guiHelper.StereoBox(xLoc, yLoc, xWidth, yWidth, ref text, red);
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private void EnableYawCorrection(int sensor)
-	{
-		OVRDevice.EnableMagYawCorrection(sensor, true);
-		Quaternion q = Quaternion.identity;
-		if (CameraController != null && CameraController.PredictionOn)
-		{
-			OVRDevice.GetPredictedOrientation(sensor, ref q);
-		}
-		else
-		{
-			OVRDevice.GetOrientation(sensor, ref q);
-		}
-		CurEulerRef = q.eulerAngles;
-	}
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

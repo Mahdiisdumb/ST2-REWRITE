@@ -1,180 +1,66 @@
-using System;
-using CodeStage.AntiCheat.Detectors;
 using UnityEngine;
 
 namespace CodeStage.AntiCheat.ObscuredTypes
 {
-	[Serializable]
-	public struct ObscuredShort : IEquatable<ObscuredShort>, IFormattable
+	public class ObscuredShort : MonoBehaviour
 	{
-		private static short cryptoKey = 214;
+		/*
+		Dummy class. This could have happened for several reasons:
 
-		private short currentCryptoKey;
+		1. No dll files were provided to AssetRipper.
 
-		private short hiddenValue;
+			Unity asset bundles and serialized files do not contain script information to decompile.
+				* For Mono games, that information is contained in .NET dll files.
+				* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+				
+			AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+			A unexpected file structure could cause AssetRipper to not find the required files.
 
-		private short fakeValue;
+		2. Incorrect dll files were provided to AssetRipper.
 
-		private bool inited;
+			Any of the following could cause this:
+				* Il2CppInterop assemblies
+				* Deobfuscated assemblies
+				* Older assemblies (compared to when the bundle was built)
+				* Newer assemblies (compared to when the bundle was built)
 
-		private ObscuredShort(short value)
-		{
-			currentCryptoKey = cryptoKey;
-			hiddenValue = value;
-			fakeValue = 0;
-			inited = true;
-		}
+			Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-		public static void SetNewCryptoKey(short newKey)
-		{
-			cryptoKey = newKey;
-		}
+		3. Assembly Reconstruction has not been implemented.
 
-		public static short EncryptDecrypt(short value)
-		{
-			return EncryptDecrypt(value, 0);
-		}
+			Asset bundles contain a small amount of information about the script content.
+			This information can be used to recover the serializable fields of a script.
 
-		public static short EncryptDecrypt(short value, short key)
-		{
-			if (key == 0)
-			{
-				return (short)(value ^ cryptoKey);
-			}
-			return (short)(value ^ key);
-		}
+			See: https://github.com/AssetRipper/AssetRipper/issues/655
+	
+		4. This script is unnecessary.
 
-		public void ApplyNewCryptoKey()
-		{
-			if (currentCryptoKey != cryptoKey)
-			{
-				hiddenValue = EncryptDecrypt(InternalDecrypt(), cryptoKey);
-				currentCryptoKey = cryptoKey;
-			}
-		}
+			If this script has no asset or script references, it can be deleted.
+			Be sure to resolve any compile errors before deleting because they can hide references.
 
-		public void RandomizeCryptoKey()
-		{
-			short value = InternalDecrypt();
-			do
-			{
-				currentCryptoKey = (short)UnityEngine.Random.Range(-32768, 32767);
-			}
-			while (currentCryptoKey == 0);
-			hiddenValue = EncryptDecrypt(value, currentCryptoKey);
-		}
+		5. Script Content Level 0
 
-		public short GetEncrypted()
-		{
-			ApplyNewCryptoKey();
-			return hiddenValue;
-		}
+			AssetRipper was set to not load any script information.
 
-		public void SetEncrypted(short encrypted)
-		{
-			inited = true;
-			hiddenValue = encrypted;
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				fakeValue = InternalDecrypt();
-			}
-		}
+		6. Cpp2IL failed to decompile Il2Cpp data
 
-		private short InternalDecrypt()
-		{
-			if (!inited)
-			{
-				currentCryptoKey = cryptoKey;
-				hiddenValue = EncryptDecrypt(0);
-				fakeValue = 0;
-				inited = true;
-			}
-			short num = EncryptDecrypt(hiddenValue, currentCryptoKey);
-			if (ObscuredCheatingDetector.IsRunning && fakeValue != 0 && num != fakeValue)
-			{
-				ObscuredCheatingDetector.Instance.OnCheatingDetected();
-			}
-			return num;
-		}
+			If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+			This is an upstream problem, and the AssetRipper developer has very little control over it.
+			Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-		public static implicit operator ObscuredShort(short value)
-		{
-			ObscuredShort result = new ObscuredShort(EncryptDecrypt(value));
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				result.fakeValue = value;
-			}
-			return result;
-		}
+		7. An incorrect path was provided to AssetRipper.
 
-		public static implicit operator short(ObscuredShort value)
-		{
-			return value.InternalDecrypt();
-		}
+			This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+			AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+			An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+			Generally, AssetRipper expects users to provide the root folder of the game. For example:
+				* Windows: the folder containing the game's .exe file
+				* Mac: the .app file/folder
+				* Linux: the folder containing the game's executable file
+				* Android: the apk file
+				* iOS: the ipa file
+				* Switch: the folder containing exefs and romfs
 
-		public static ObscuredShort operator ++(ObscuredShort input)
-		{
-			short value = (short)(input.InternalDecrypt() + 1);
-			input.hiddenValue = EncryptDecrypt(value);
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				input.fakeValue = value;
-			}
-			return input;
-		}
-
-		public static ObscuredShort operator --(ObscuredShort input)
-		{
-			short value = (short)(input.InternalDecrypt() - 1);
-			input.hiddenValue = EncryptDecrypt(value);
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				input.fakeValue = value;
-			}
-			return input;
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (!(obj is ObscuredShort))
-			{
-				return false;
-			}
-			return Equals((ObscuredShort)obj);
-		}
-
-		public bool Equals(ObscuredShort obj)
-		{
-			if (currentCryptoKey == obj.currentCryptoKey)
-			{
-				return hiddenValue == obj.hiddenValue;
-			}
-			return EncryptDecrypt(hiddenValue, currentCryptoKey) == EncryptDecrypt(obj.hiddenValue, obj.currentCryptoKey);
-		}
-
-		public override string ToString()
-		{
-			return InternalDecrypt().ToString();
-		}
-
-		public string ToString(string format)
-		{
-			return InternalDecrypt().ToString(format);
-		}
-
-		public override int GetHashCode()
-		{
-			return InternalDecrypt().GetHashCode();
-		}
-
-		public string ToString(IFormatProvider provider)
-		{
-			return InternalDecrypt().ToString(provider);
-		}
-
-		public string ToString(string format, IFormatProvider provider)
-		{
-			return InternalDecrypt().ToString(format, provider);
-		}
+		*/
 	}
 }

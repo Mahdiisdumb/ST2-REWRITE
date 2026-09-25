@@ -2,185 +2,62 @@ using UnityEngine;
 
 public class CamPos : MonoBehaviour
 {
-	public Transform orgpos;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public Transform newpos;
+	1. No dll files were provided to AssetRipper.
 
-	public Camera screencam;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public Camera MainCamera;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private Camera camleft;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private Camera camright;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public bool isanaglyph;
+	3. Assembly Reconstruction has not been implemented.
 
-	public bool isovr;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private bool hascams;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public bool iszoomed;
+	4. This script is unnecessary.
 
-	public float myTimer = 10f;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public Transform remaining;
+	5. Script Content Level 0
 
-	public bool changesettings;
+		AssetRipper was set to not load any script information.
 
-	private bool canuse = true;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private void Awake()
-	{
-		if (PlayerPrefs.GetInt("cameramode") == 1)
-		{
-			isanaglyph = true;
-		}
-		if (PlayerPrefs.GetInt("cameramode") == 2)
-		{
-			isovr = true;
-		}
-		remaining.parent = null;
-		remaining.localPosition = new Vector3(0.1f, 0.9f, 0f);
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private void Update()
-	{
-		myTimer = 10f;
-		if (Input.GetKeyDown(KeyCode.Mouse1) && myTimer > 0f && canuse)
-		{
-			iszoomed = !iszoomed;
-		}
-		if (myTimer > 0f && iszoomed)
-		{
-			myTimer -= Time.deltaTime;
-		}
-		if (myTimer <= 0f && iszoomed)
-		{
-			myTimer = 0.1f;
-			canuse = false;
-			iszoomed = false;
-			myTimer += Time.deltaTime / 1.5f;
-			remaining.GetComponent<GUIText>().color = Color.red;
-		}
-		if (myTimer >= 0f && !canuse)
-		{
-			myTimer += Time.deltaTime;
-		}
-		if (!canuse && myTimer >= 10f)
-		{
-			myTimer = 10f;
-			remaining.GetComponent<GUIText>().color = Color.white;
-			canuse = true;
-		}
-		if (isanaglyph && !hascams)
-		{
-			camleft = GameObject.Find("leftEye").GetComponent<Camera>();
-			camright = GameObject.Find("rightEye").GetComponent<Camera>();
-			hascams = true;
-		}
-		if (isovr && !hascams)
-		{
-			camleft = GameObject.Find("CameraLeft").GetComponent<Camera>();
-			camright = GameObject.Find("CameraRight").GetComponent<Camera>();
-			hascams = true;
-		}
-		if (iszoomed)
-		{
-			base.transform.position = Vector3.MoveTowards(base.transform.position, newpos.position, 1.5f * Time.deltaTime);
-			if (MainCamera.fieldOfView > 24f)
-			{
-				MainCamera.fieldOfView -= Time.deltaTime * 70f * 2f;
-				if (hascams)
-				{
-					camleft.fieldOfView -= Time.deltaTime * 70f * 2f;
-					camright.fieldOfView -= Time.deltaTime * 70f * 2f;
-				}
-			}
-			else
-			{
-				MainCamera.fieldOfView = 24f;
-				if (hascams)
-				{
-					camleft.fieldOfView = 24f;
-					camright.fieldOfView = 24f;
-					camleft.cullingMask = 1 << LayerMask.NameToLayer("CamCorder");
-					camleft.clearFlags = CameraClearFlags.Color;
-					camright.cullingMask = 1 << LayerMask.NameToLayer("CamCorder");
-					camright.clearFlags = CameraClearFlags.Color;
-				}
-				RenderSettings.fog = false;
-				MainCamera.cullingMask = 1 << LayerMask.NameToLayer("CamCorder");
-				MainCamera.clearFlags = CameraClearFlags.Color;
-				changesettings = true;
-			}
-		}
-		else
-		{
-			base.transform.position = Vector3.MoveTowards(base.transform.position, orgpos.position, 1.5f * Time.deltaTime);
-			if (MainCamera.fieldOfView < 60f)
-			{
-				MainCamera.fieldOfView += Time.deltaTime * 70f * 2f;
-				if (hascams)
-				{
-					camleft.fieldOfView += Time.deltaTime * 70f * 2f;
-					camright.fieldOfView += Time.deltaTime * 70f * 2f;
-				}
-				if (changesettings)
-				{
-					RenderSettings.fog = true;
-					MainCamera.cullingMask = -2049;
-					MainCamera.clearFlags = CameraClearFlags.Skybox;
-					if (hascams)
-					{
-						camleft.cullingMask = -2049;
-						camleft.clearFlags = CameraClearFlags.Skybox;
-						camright.cullingMask = -1025;
-						camright.clearFlags = CameraClearFlags.Skybox;
-					}
-					changesettings = false;
-				}
-			}
-			else
-			{
-				MainCamera.fieldOfView = 60f;
-				if (isanaglyph)
-				{
-					camleft.fieldOfView = 60f;
-					camright.fieldOfView = 60f;
-				}
-			}
-		}
-		if (Input.GetKey(KeyCode.E))
-		{
-			if (!GetComponent<AudioSource>().isPlaying)
-			{
-				GetComponent<AudioSource>().Play();
-			}
-			if (screencam.fieldOfView > 10f)
-			{
-				screencam.fieldOfView -= 10f * Time.deltaTime * 3f;
-			}
-			else
-			{
-				screencam.fieldOfView = 10f;
-			}
-		}
-		if (Input.GetKey(KeyCode.Q))
-		{
-			if (!GetComponent<AudioSource>().isPlaying)
-			{
-				GetComponent<AudioSource>().Play();
-			}
-			if (screencam.fieldOfView < 60f)
-			{
-				screencam.fieldOfView += 10f * Time.deltaTime * 3f;
-			}
-			else
-			{
-				screencam.fieldOfView = 60f;
-			}
-		}
-		remaining.GetComponent<GUIText>().text = Mathf.FloorToInt(myTimer).ToString();
-	}
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

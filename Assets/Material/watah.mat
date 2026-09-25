@@ -17,10 +17,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5570f59d1d5b7504a95bef6efed0584d, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: d484dc5bdf1096c41bf09e036c351ea8, type: 3}
         m_Scale: {x: 50, y: 50}
         m_Offset: {x: 0, y: 0}
     m_Floats: {}
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+      _Color: {r: 1, g: 1, b: 1, a: 1}

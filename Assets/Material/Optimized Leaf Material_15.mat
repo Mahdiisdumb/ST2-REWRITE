@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Optimized Leaf Material_15
   m_Shader: {fileID: 10607, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
+  m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_CustomRenderQueue: -1
@@ -17,23 +17,23 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: b5035137ae9e2b14aabd50b7ad7842da, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 0e6cccd15a190724dbeed971cfc721dd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ShadowTex:
-        m_Texture: {fileID: 2800000, guid: 0890463e48e9da64bb8c39691f4935c6, type: 3}
+      _ShadowTex:
+        m_Texture: {fileID: 2800000, guid: b2ab13a20aafa0642a3fbcabd1411baf, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Cutoff: 0.8437554
-    - _ShadowOffsetScale: 1
-    - _ShadowStrength: 0.8
-    - _SquashAmount: 1
-    - _TranslucencyViewDependency: 0.7
+      _Cutoff: 0.8437554
+      _ShadowOffsetScale: 1
+      _ShadowStrength: 0.8
+      _SquashAmount: 1
+      _TranslucencyViewDependency: 0.7
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Scale: {r: 1, g: 1, b: 1, a: 1}
-    - _TranslucencyColor: {r: 0.23894773, g: 0.2835821, b: 0.1608376, a: 1}
-    - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _Scale: {r: 1, g: 1, b: 1, a: 1}
+      _TranslucencyColor: {r: 0.23894773, g: 0.2835821, b: 0.1608376, a: 1}
+      _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
+      _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}

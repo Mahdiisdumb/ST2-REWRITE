@@ -1,131 +1,63 @@
-using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
 
 public class Menu2Root : MonoBehaviour
 {
-	public GameObject[] menus;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public GameObject show;
+	1. No dll files were provided to AssetRipper.
 
-	public float damp = 0.2f;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	private GameObject down;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private GameObject up;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private float yVelocity;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Texture2D welcome;
+	3. Assembly Reconstruction has not been implemented.
 
-	public Texture2D welcomespanish;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public bool showwelcome;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public string exit = "Show me the controls!";
+	4. This script is unnecessary.
 
-	private string login = "Login To ZeoWorks Account";
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private string logout = "Log Out";
+	5. Script Content Level 0
 
-	public bool haslogin;
+		AssetRipper was set to not load any script information.
 
-	public GUISkin guiSkin;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private void Awake()
-	{
-		if (PlayerPrefs.GetInt("language") == 1)
-		{
-			exit = "¡Muestrame los controles!";
-			welcome = welcomespanish;
-			logout = "Cerrar Sesión";
-			login = "Iniciar Sesión en Cuenta de ZeoWorks";
-		}
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private void Start()
-	{
-		string @string = ObscuredPrefs.GetString("ZWName");
-		if (@string != string.Empty)
-		{
-			haslogin = true;
-		}
-		for (int i = 0; i < menus.Length; i++)
-		{
-			menus[i].transform.position = new Vector3(0f, -55f, 0f);
-		}
-		show.transform.position = new Vector3(-5f, 0f, 5f);
-		Cursor.visible = true;
-		Screen.lockCursor = false;
-		if (PlayerPrefs.GetInt("firsttime") == 0)
-		{
-			PlayerPrefs.SetInt("firsttime", 1);
-		}
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	private void Update()
-	{
-		if (down != null)
-		{
-			float y = Mathf.SmoothDamp(down.transform.position.y, -15f, ref yVelocity, damp);
-			down.transform.position = new Vector3(down.transform.position.x, y, down.transform.position.z);
-			if (down.transform.position.y <= -14.5f)
-			{
-				down = null;
-			}
-		}
-		else if (up != null)
-		{
-			float y2 = Mathf.SmoothDamp(up.transform.position.y, 0f, ref yVelocity, damp);
-			up.transform.position = new Vector3(up.transform.position.x, y2, up.transform.position.z);
-			if (up.transform.position.y >= -0.5f)
-			{
-				up = null;
-			}
-		}
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public void Show(string _show)
-	{
-		down = show;
-		for (int i = 0; i < menus.Length; i++)
-		{
-			if (menus[i].name == _show)
-			{
-				up = menus[i];
-				show = up;
-			}
-		}
-	}
-
-	private void OnGUI()
-	{
-		if (showwelcome)
-		{
-			GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), welcome);
-			if (GUI.Button(new Rect(Screen.width - 180, Screen.height - 35, 170f, 25f), exit))
-			{
-				showwelcome = false;
-			}
-			return;
-		}
-		GUI.skin = guiSkin;
-		if (GetComponent<ServerSelect>().enabled || GetComponent<Login>().enabled)
-		{
-			return;
-		}
-		if (!haslogin)
-		{
-			if (GUI.Button(new Rect(Screen.width - 250, 0f, 250f, 50f), "<size=12>" + login + "</size>"))
-			{
-				GetComponent<Login>().enabled = true;
-				Show("Online");
-			}
-		}
-		else if (GUI.Button(new Rect(Screen.width - 230, 0f, 230f, 50f), logout))
-		{
-			ObscuredPrefs.SetString("ZWName", string.Empty);
-			ObscuredPrefs.SetString("PlayerType", string.Empty);
-			haslogin = false;
-		}
-	}
+	*/
 }

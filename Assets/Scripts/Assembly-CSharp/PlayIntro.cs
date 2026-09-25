@@ -1,73 +1,63 @@
-using System.Collections;
 using UnityEngine;
 
 public class PlayIntro : MonoBehaviour
 {
-	public MovieTexture movTexture;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public MovieTexture movTexture2;
+	1. No dll files were provided to AssetRipper.
 
-	public bool isplaying;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public bool playnow;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public Texture2D title;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public Texture2D english;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Texture2D spanish;
+	3. Assembly Reconstruction has not been implemented.
 
-	public Texture2D logo;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private bool start;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private void Awake()
-	{
-	}
+	4. This script is unnecessary.
 
-	private void Update()
-	{
-		if (!movTexture.isPlaying && !isplaying && playnow && start)
-		{
-			if (PlayerPrefs.GetInt("language") == 1)
-			{
-				GetComponent<GUITexture>().texture = movTexture2;
-				movTexture2.Play();
-			}
-			else
-			{
-				GetComponent<GUITexture>().texture = movTexture;
-				movTexture.Play();
-			}
-		}
-		if (playnow && !start)
-		{
-			StartCoroutine(LoadMenu());
-		}
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private void OnGUI()
-	{
-		if (!playnow)
-		{
-			GUI.DrawTexture(new Rect(Screen.width / 2 - 200, 10f, 400f, 150f), title);
-			if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 90, 200f, 75f), english))
-			{
-				PlayerPrefs.SetInt("language", 0);
-				playnow = true;
-			}
-			if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 + 10, 200f, 75f), spanish))
-			{
-				PlayerPrefs.SetInt("language", 1);
-				playnow = true;
-			}
-		}
-	}
+	5. Script Content Level 0
 
-	private IEnumerator LoadMenu()
-	{
-		start = true;
-		yield return new WaitForSeconds(3.5f);
-		Application.LoadLevel(1);
-	}
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

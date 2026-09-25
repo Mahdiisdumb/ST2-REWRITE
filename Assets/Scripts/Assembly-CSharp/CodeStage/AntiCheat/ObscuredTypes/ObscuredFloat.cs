@@ -1,239 +1,66 @@
-using System;
-using System.Runtime.InteropServices;
-using CodeStage.AntiCheat.Common;
-using CodeStage.AntiCheat.Detectors;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace CodeStage.AntiCheat.ObscuredTypes
 {
-	[Serializable]
-	public struct ObscuredFloat : IEquatable<ObscuredFloat>, IFormattable
+	public class ObscuredFloat : MonoBehaviour
 	{
-		[StructLayout(LayoutKind.Explicit)]
-		private struct FloatIntBytesUnion
-		{
-			[FieldOffset(0)]
-			public float f;
+		/*
+		Dummy class. This could have happened for several reasons:
 
-			[FieldOffset(0)]
-			public int i;
+		1. No dll files were provided to AssetRipper.
 
-			[FieldOffset(0)]
-			public ACTkByte4 b4;
-		}
+			Unity asset bundles and serialized files do not contain script information to decompile.
+				* For Mono games, that information is contained in .NET dll files.
+				* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+				
+			AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+			A unexpected file structure could cause AssetRipper to not find the required files.
 
-		private static int cryptoKey = 230887;
+		2. Incorrect dll files were provided to AssetRipper.
 
-		[SerializeField]
-		private int currentCryptoKey;
+			Any of the following could cause this:
+				* Il2CppInterop assemblies
+				* Deobfuscated assemblies
+				* Older assemblies (compared to when the bundle was built)
+				* Newer assemblies (compared to when the bundle was built)
 
-		[SerializeField]
-		private ACTkByte4 hiddenValue;
+			Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-		[SerializeField]
-		[FormerlySerializedAs("hiddenValue")]
-		private byte[] hiddenValueOld;
+		3. Assembly Reconstruction has not been implemented.
 
-		[SerializeField]
-		private float fakeValue;
+			Asset bundles contain a small amount of information about the script content.
+			This information can be used to recover the serializable fields of a script.
 
-		[SerializeField]
-		private bool inited;
+			See: https://github.com/AssetRipper/AssetRipper/issues/655
+	
+		4. This script is unnecessary.
 
-		private ObscuredFloat(ACTkByte4 value)
-		{
-			currentCryptoKey = cryptoKey;
-			hiddenValue = value;
-			hiddenValueOld = null;
-			fakeValue = 0f;
-			inited = true;
-		}
+			If this script has no asset or script references, it can be deleted.
+			Be sure to resolve any compile errors before deleting because they can hide references.
 
-		public static void SetNewCryptoKey(int newKey)
-		{
-			cryptoKey = newKey;
-		}
+		5. Script Content Level 0
 
-		public static int Encrypt(float value)
-		{
-			return Encrypt(value, cryptoKey);
-		}
+			AssetRipper was set to not load any script information.
 
-		public static int Encrypt(float value, int key)
-		{
-			FloatIntBytesUnion floatIntBytesUnion = default(FloatIntBytesUnion);
-			floatIntBytesUnion.f = value;
-			floatIntBytesUnion.i ^= key;
-			return floatIntBytesUnion.i;
-		}
+		6. Cpp2IL failed to decompile Il2Cpp data
 
-		private static ACTkByte4 InternalEncrypt(float value)
-		{
-			return InternalEncrypt(value, 0);
-		}
+			If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+			This is an upstream problem, and the AssetRipper developer has very little control over it.
+			Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-		private static ACTkByte4 InternalEncrypt(float value, int key)
-		{
-			int num = key;
-			if (num == 0)
-			{
-				num = cryptoKey;
-			}
-			FloatIntBytesUnion floatIntBytesUnion = default(FloatIntBytesUnion);
-			floatIntBytesUnion.f = value;
-			floatIntBytesUnion.i ^= num;
-			return floatIntBytesUnion.b4;
-		}
+		7. An incorrect path was provided to AssetRipper.
 
-		public static float Decrypt(int value)
-		{
-			return Decrypt(value, cryptoKey);
-		}
+			This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+			AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+			An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+			Generally, AssetRipper expects users to provide the root folder of the game. For example:
+				* Windows: the folder containing the game's .exe file
+				* Mac: the .app file/folder
+				* Linux: the folder containing the game's executable file
+				* Android: the apk file
+				* iOS: the ipa file
+				* Switch: the folder containing exefs and romfs
 
-		public static float Decrypt(int value, int key)
-		{
-			FloatIntBytesUnion floatIntBytesUnion = default(FloatIntBytesUnion);
-			floatIntBytesUnion.i = value ^ key;
-			return floatIntBytesUnion.f;
-		}
-
-		public void ApplyNewCryptoKey()
-		{
-			if (currentCryptoKey != cryptoKey)
-			{
-				hiddenValue = InternalEncrypt(InternalDecrypt(), cryptoKey);
-				currentCryptoKey = cryptoKey;
-			}
-		}
-
-		public void RandomizeCryptoKey()
-		{
-			float value = InternalDecrypt();
-			do
-			{
-				currentCryptoKey = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-			}
-			while (currentCryptoKey == 0);
-			hiddenValue = InternalEncrypt(value, currentCryptoKey);
-		}
-
-		public int GetEncrypted()
-		{
-			ApplyNewCryptoKey();
-			FloatIntBytesUnion floatIntBytesUnion = default(FloatIntBytesUnion);
-			floatIntBytesUnion.b4 = hiddenValue;
-			return floatIntBytesUnion.i;
-		}
-
-		public void SetEncrypted(int encrypted)
-		{
-			inited = true;
-			FloatIntBytesUnion floatIntBytesUnion = default(FloatIntBytesUnion);
-			floatIntBytesUnion.i = encrypted;
-			hiddenValue = floatIntBytesUnion.b4;
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				fakeValue = InternalDecrypt();
-			}
-		}
-
-		private float InternalDecrypt()
-		{
-			if (!inited)
-			{
-				currentCryptoKey = cryptoKey;
-				hiddenValue = InternalEncrypt(0f);
-				fakeValue = 0f;
-				inited = true;
-			}
-			FloatIntBytesUnion floatIntBytesUnion = default(FloatIntBytesUnion);
-			floatIntBytesUnion.b4 = hiddenValue;
-			floatIntBytesUnion.i ^= currentCryptoKey;
-			float f = floatIntBytesUnion.f;
-			if (ObscuredCheatingDetector.IsRunning && fakeValue != 0f && Math.Abs(f - fakeValue) > ObscuredCheatingDetector.Instance.floatEpsilon)
-			{
-				ObscuredCheatingDetector.Instance.OnCheatingDetected();
-			}
-			return f;
-		}
-
-		public static implicit operator ObscuredFloat(float value)
-		{
-			ObscuredFloat result = new ObscuredFloat(InternalEncrypt(value));
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				result.fakeValue = value;
-			}
-			return result;
-		}
-
-		public static implicit operator float(ObscuredFloat value)
-		{
-			return value.InternalDecrypt();
-		}
-
-		public static ObscuredFloat operator ++(ObscuredFloat input)
-		{
-			float value = input.InternalDecrypt() + 1f;
-			input.hiddenValue = InternalEncrypt(value, input.currentCryptoKey);
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				input.fakeValue = value;
-			}
-			return input;
-		}
-
-		public static ObscuredFloat operator --(ObscuredFloat input)
-		{
-			float value = input.InternalDecrypt() - 1f;
-			input.hiddenValue = InternalEncrypt(value, input.currentCryptoKey);
-			if (ObscuredCheatingDetector.IsRunning)
-			{
-				input.fakeValue = value;
-			}
-			return input;
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (!(obj is ObscuredFloat))
-			{
-				return false;
-			}
-			return Equals((ObscuredFloat)obj);
-		}
-
-		public bool Equals(ObscuredFloat obj)
-		{
-			double num = obj.InternalDecrypt();
-			double obj2 = InternalDecrypt();
-			return num.Equals(obj2);
-		}
-
-		public override int GetHashCode()
-		{
-			return InternalDecrypt().GetHashCode();
-		}
-
-		public override string ToString()
-		{
-			return InternalDecrypt().ToString();
-		}
-
-		public string ToString(string format)
-		{
-			return InternalDecrypt().ToString(format);
-		}
-
-		public string ToString(IFormatProvider provider)
-		{
-			return InternalDecrypt().ToString(provider);
-		}
-
-		public string ToString(string format, IFormatProvider provider)
-		{
-			return InternalDecrypt().ToString(format, provider);
-		}
+		*/
 	}
 }

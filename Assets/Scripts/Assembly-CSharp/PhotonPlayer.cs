@@ -1,144 +1,63 @@
-using ExitGames.Client.Photon;
 using UnityEngine;
 
-public class PhotonPlayer
+public class PhotonPlayer : MonoBehaviour
 {
-	private int actorID = -1;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private string nameField = string.Empty;
+	1. No dll files were provided to AssetRipper.
 
-	public readonly bool isLocal;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public int ID
-	{
-		get
-		{
-			return actorID;
-		}
-	}
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public string name
-	{
-		get
-		{
-			return nameField;
-		}
-		set
-		{
-			if (!isLocal)
-			{
-				Debug.LogError("Error: Cannot change the name of a remote player!");
-			}
-			else
-			{
-				nameField = value;
-			}
-		}
-	}
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public bool isMasterClient
-	{
-		get
-		{
-			return PhotonNetwork.networkingPeer.mMasterClient == this;
-		}
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Hashtable customProperties { get; private set; }
+	3. Assembly Reconstruction has not been implemented.
 
-	public Hashtable allProperties
-	{
-		get
-		{
-			Hashtable hashtable = new Hashtable();
-			hashtable.Merge(customProperties);
-			hashtable[byte.MaxValue] = name;
-			return hashtable;
-		}
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public PhotonPlayer(bool isLocal, int actorID, string name)
-	{
-		customProperties = new Hashtable();
-		this.isLocal = isLocal;
-		this.actorID = actorID;
-		nameField = name;
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	protected internal PhotonPlayer(bool isLocal, int actorID, Hashtable properties)
-	{
-		customProperties = new Hashtable();
-		this.isLocal = isLocal;
-		this.actorID = actorID;
-		InternalCacheProperties(properties);
-	}
+	4. This script is unnecessary.
 
-	internal void InternalCacheProperties(Hashtable properties)
-	{
-		if (properties != null && properties.Count != 0 && !customProperties.Equals(properties))
-		{
-			if (properties.ContainsKey(byte.MaxValue))
-			{
-				nameField = (string)properties[byte.MaxValue];
-			}
-			customProperties.MergeStringKeys(properties);
-			customProperties.StripKeysWithNullValues();
-		}
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public override string ToString()
-	{
-		return (name != null) ? name : string.Empty;
-	}
+	5. Script Content Level 0
 
-	public override bool Equals(object p)
-	{
-		PhotonPlayer photonPlayer = p as PhotonPlayer;
-		return photonPlayer != null && GetHashCode() == photonPlayer.GetHashCode();
-	}
+		AssetRipper was set to not load any script information.
 
-	public override int GetHashCode()
-	{
-		return ID;
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	internal void InternalChangeLocalID(int newID)
-	{
-		if (!isLocal)
-		{
-			Debug.LogError("ERROR You should never change PhotonPlayer IDs!");
-		}
-		else
-		{
-			actorID = newID;
-		}
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public void SetCustomProperties(Hashtable propertiesToSet)
-	{
-		if (propertiesToSet != null)
-		{
-			customProperties.MergeStringKeys(propertiesToSet);
-			customProperties.StripKeysWithNullValues();
-			Hashtable actorProperties = propertiesToSet.StripToStringKeys();
-			if (actorID > 0)
-			{
-				PhotonNetwork.networkingPeer.OpSetCustomPropertiesOfActor(actorID, actorProperties, true, 0);
-			}
-			NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerPropertiesChanged, this, propertiesToSet);
-		}
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	public static PhotonPlayer Find(int ID)
-	{
-		for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
-		{
-			PhotonPlayer photonPlayer = PhotonNetwork.playerList[i];
-			if (photonPlayer.ID == ID)
-			{
-				return photonPlayer;
-			}
-		}
-		return null;
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

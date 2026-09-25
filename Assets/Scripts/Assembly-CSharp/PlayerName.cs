@@ -1,167 +1,63 @@
-using CodeStage.AntiCheat.ObscuredTypes;
-using Photon;
 using UnityEngine;
 
-public class PlayerName : Photon.MonoBehaviour
+public class PlayerName : MonoBehaviour
 {
-	public string playerName;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public string playerType;
+	1. No dll files were provided to AssetRipper.
 
-	public Transform positionDisplay;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public bool showname = true;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private string tempname;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private string temptype;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Texture2D crown;
+	3. Assembly Reconstruction has not been implemented.
 
-	private bool hidename;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public bool isadmin;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private void Awake()
-	{
-		if (!positionDisplay)
-		{
-			if (!base.photonView.isMine)
-			{
-				positionDisplay = base.transform.Find("multiplayertubby/Cylinder002");
-			}
-			else
-			{
-				positionDisplay = base.transform;
-			}
-		}
-		if (base.photonView.isMine)
-		{
-			if (ObscuredPrefs.GetString("PlayerType") == string.Empty)
-			{
-				tempname = ObscuredPrefs.GetString("PlayerName");
-			}
-			else
-			{
-				tempname = ObscuredPrefs.GetString("ZWName");
-			}
-			temptype = ObscuredPrefs.GetString("PlayerType");
-			if (tempname == string.Empty)
-			{
-				tempname = "Guest";
-			}
-			playerType = temptype;
-			base.photonView.RPC("SetName", PhotonTargets.AllBuffered, tempname, temptype);
-			hidename = true;
-		}
-		if (GameObject.Find("Mechanics").GetComponent<Mechanics>().isversus)
-		{
-			showname = false;
-		}
-	}
+	4. This script is unnecessary.
 
-	private void Start()
-	{
-		if (base.gameObject.name == "player(Clone)" || base.gameObject.name == "zeoworksplayer(Clone)")
-		{
-			base.gameObject.name = "Player";
-		}
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private void Update()
-	{
-		playerName = base.gameObject.name;
-		if (base.gameObject.name.Contains("<"))
-		{
-			base.gameObject.name = base.gameObject.name.Replace("<", string.Empty);
-		}
-	}
+	5. Script Content Level 0
 
-	private void OnGUI()
-	{
-		GUI.depth = 2;
-		float num = 0f;
-		if (!showname || hidename)
-		{
-			return;
-		}
-		if (isadmin)
-		{
-			GUI.color = Color.red;
-		}
-		else
-		{
-			GUI.color = Color.white;
-		}
-		if (!Camera.main)
-		{
-			return;
-		}
-		Vector3 vector = Camera.main.WorldToScreenPoint(positionDisplay.position);
-		if (vector.z * 3f < 50f)
-		{
-			num = vector.z * 3f;
-		}
-		else
-		{
-			num = 50f;
-		}
-		if (vector.z > 0f)
-		{
-			if (playerName.Contains("<"))
-			{
-				playerName = playerName.Replace("<", string.Empty);
-			}
-			string text = playerType;
-			if (text == "2")
-			{
-				GUI.color = Color.green;
-			}
-			if (text == "3")
-			{
-				GUI.color = Color.cyan;
-			}
-			if (text == "4")
-			{
-				GUI.color = Color.red;
-			}
-			if (text == "5")
-			{
-				GUI.color = Color.grey;
-			}
-			if (text == "6")
-			{
-				GUI.color = Color.cyan;
-			}
-			if (text == "7")
-			{
-				GUI.color = Color.grey;
-			}
-			if (text == "8")
-			{
-				GUI.color = Color.red;
-			}
-			if (text == "9")
-			{
-				GUI.color = Color.yellow;
-			}
-			if (text == "10")
-			{
-				GUI.color = Color.blue;
-			}
-			GUI.Label(new Rect(vector.x - 30f, (float)Screen.height - vector.y - 1f - 21f, 200f, 30f), playerName);
-		}
-	}
+		AssetRipper was set to not load any script information.
 
-	[RPC]
-	private void SetName(string newname, string type)
-	{
-		if (base.photonView.isMine)
-		{
-			newname = tempname;
-			type = temptype;
-		}
-		base.gameObject.name = newname;
-		playerType = type;
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

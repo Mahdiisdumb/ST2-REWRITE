@@ -6,7 +6,7 @@ Flare:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Small Flare
-  m_FlareTexture: {fileID: 2800000, guid: 283bedf82fef1674caeb25c7736c02b7, type: 3}
+  m_FlareTexture: {fileID: 2800000, guid: 244fab7bcca4bf14ab7ddaa6a8f678b8, type: 3}
   m_TextureLayout: 0
   m_Elements:
   - m_ImageIndex: 0

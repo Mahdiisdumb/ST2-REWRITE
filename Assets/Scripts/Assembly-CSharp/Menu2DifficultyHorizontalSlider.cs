@@ -2,116 +2,62 @@ using UnityEngine;
 
 public class Menu2DifficultyHorizontalSlider : MonoBehaviour
 {
-	public float maxXPos;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public float minXPos;
+	1. No dll files were provided to AssetRipper.
 
-	private int maxValue = 4;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public int Value;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private bool move;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private bool changeValue;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	private void Start()
-	{
-		base.gameObject.AddComponent<BoxCollider>();
-		Vector3 size = GetComponent<BoxCollider>().size;
-		GetComponent<BoxCollider>().size = new Vector3(600f, size.y, size.z);
-		if (!PlayerPrefs.HasKey("difficulty"))
-		{
-			PlayerPrefs.SetInt("difficulty", maxValue);
-		}
-		Value = PlayerPrefs.GetInt("difficulty");
-		if (Value == 0)
-		{
-			PlayerPrefs.SetString("difficultyName", "Noob");
-		}
-		else if (Value == 1)
-		{
-			PlayerPrefs.SetString("difficultyName", "Easy");
-		}
-		else if (Value == 2)
-		{
-			PlayerPrefs.SetString("difficultyName", "Normal");
-		}
-		else if (Value == 3)
-		{
-			PlayerPrefs.SetString("difficultyName", "Hard");
-		}
-		else
-		{
-			PlayerPrefs.SetString("difficultyName", "Pro");
-		}
-		float num = Vector3.Distance(new Vector3(minXPos, 0f, 0f), new Vector3(maxXPos, 0f, 0f));
-		float num2 = Vector3.Distance(new Vector3(0f, 0f, 0f), new Vector3(maxValue, 0f, 0f));
-		float x = minXPos + num / num2 * (float)Value;
-		base.transform.localPosition = new Vector3(x, base.transform.localPosition.y, 0f);
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	private void Update()
-	{
-		if (!move)
-		{
-			return;
-		}
-		Vector3 vector = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, base.transform.position.z - 9f));
-		if (0f - vector.x > maxXPos)
-		{
-			base.transform.localPosition = new Vector3(maxXPos, base.transform.localPosition.y, 0f);
-			Value = maxValue;
-			changeValue = true;
-		}
-		else if (0f - vector.x < minXPos)
-		{
-			base.transform.localPosition = new Vector3(minXPos, base.transform.localPosition.y, 0f);
-			Value = 0;
-			changeValue = true;
-		}
-		else
-		{
-			base.transform.localPosition = new Vector3(0f - vector.x, base.transform.localPosition.y, 0f);
-			float num = Vector3.Distance(new Vector3(minXPos, 0f, 0f), new Vector3(maxXPos, 0f, 0f));
-			float num2 = base.transform.position.x - minXPos;
-			float num3 = Vector3.Distance(new Vector3(0f, 0f, 0f), new Vector3(maxValue, 0f, 0f));
-			Value = (int)(num3 * (num2 / num));
-			changeValue = true;
-		}
-		if (changeValue)
-		{
-			PlayerPrefs.SetInt("difficulty", Value);
-			if (Value == 0)
-			{
-				PlayerPrefs.SetString("difficultyName", "Noob");
-			}
-			else if (Value == 1)
-			{
-				PlayerPrefs.SetString("difficultyName", "Easy");
-			}
-			else if (Value == 2)
-			{
-				PlayerPrefs.SetString("difficultyName", "Normal");
-			}
-			else if (Value == 3)
-			{
-				PlayerPrefs.SetString("difficultyName", "Hard");
-			}
-			else
-			{
-				PlayerPrefs.SetString("difficultyName", "Pro");
-			}
-			changeValue = false;
-		}
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private void OnMouseDown()
-	{
-		move = true;
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private void OnMouseUp()
-	{
-		move = false;
-	}
+	4. This script is unnecessary.
+
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

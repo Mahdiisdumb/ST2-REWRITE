@@ -2,88 +2,62 @@ using UnityEngine;
 
 public class GameplaySettings : MonoBehaviour
 {
-	public bool showgui;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public Texture2D black;
+	1. No dll files were provided to AssetRipper.
 
-	public string cameratype = "Camera Mode:";
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public string accept = "Return";
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public string change = "Change";
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public int mode;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public float value = 10f;
+	3. Assembly Reconstruction has not been implemented.
 
-	public string modename;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public string mousesensitivity = "Mouse Sensitivity";
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private void Awake()
-	{
-		mode = PlayerPrefs.GetInt("cameramode");
-		if (PlayerPrefs.GetFloat("mouse") == 0f)
-		{
-			PlayerPrefs.SetFloat("mouse", 10f);
-		}
-		else
-		{
-			value = PlayerPrefs.GetFloat("mouse");
-		}
-		if (PlayerPrefs.GetInt("language") == 1)
-		{
-			cameratype = "Modo de Cámara:";
-			accept = "Volver";
-			mousesensitivity = "Sensibilidad del Mouse";
-			change = "Cambiar";
-		}
-	}
+	4. This script is unnecessary.
 
-	private void Update()
-	{
-		if (mode > 2)
-		{
-			mode = 0;
-		}
-		if (mode == 0)
-		{
-			modename = "    Normal";
-		}
-		if (mode == 1)
-		{
-			modename = "3D Anaglyph";
-		}
-		if (mode == 2)
-		{
-			modename = "Oculus Rift";
-		}
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private void OnMouseDown()
-	{
-		showgui = true;
-	}
+	5. Script Content Level 0
 
-	private void OnGUI()
-	{
-		if (showgui)
-		{
-			GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), black);
-			GUI.Label(new Rect(Screen.width / 2 - 60, 10f, 300f, 25f), mousesensitivity);
-			value = GUI.HorizontalSlider(new Rect(Screen.width / 2 - 100, 40f, 200f, 25f), value, 1f, 15f);
-			GUI.Label(new Rect(Screen.width / 2 - 45, Screen.height / 2 - 35, 300f, 20f), cameratype);
-			GUI.Label(new Rect(Screen.width / 2 - 40, Screen.height / 2 - 10, 200f, 20f), modename);
-			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height / 2 + 25, 100f, 20f), change))
-			{
-				mode++;
-			}
-			PlayerPrefs.SetInt("cameramode", mode);
-			PlayerPrefs.SetFloat("mouse", value);
-			if (GUI.Button(new Rect(Screen.width - 110, Screen.height - 30, 100f, 20f), accept))
-			{
-				showgui = false;
-			}
-		}
-	}
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

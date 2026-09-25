@@ -1,187 +1,63 @@
 using UnityEngine;
 
-public class OVRCrosshair
+public class OVRCrosshair : MonoBehaviour
 {
-	public Texture ImageCrosshair;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public OVRCameraController CameraController;
+	1. No dll files were provided to AssetRipper.
 
-	public OVRPlayerController PlayerController;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public float FadeTime = 0.3f;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public float FadeScale = 0.6f;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public float CrosshairDistance = 1f;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	private float DeadZoneX = 400f;
+	3. Assembly Reconstruction has not been implemented.
 
-	private float DeadZoneY = 75f;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private float ScaleSpeedX = 7f;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private float ScaleSpeedY = 7f;
+	4. This script is unnecessary.
 
-	private bool DisplayCrosshair;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private bool CollisionWithGeometry;
+	5. Script Content Level 0
 
-	private float FadeVal;
+		AssetRipper was set to not load any script information.
 
-	private Camera MainCam;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private float XL;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private float YL;
+	7. An incorrect path was provided to AssetRipper.
 
-	private float ScreenWidth = 1280f;
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	private float ScreenHeight = 800f;
-
-	public void SetCrosshairTexture(ref Texture image)
-	{
-		ImageCrosshair = image;
-	}
-
-	public void SetOVRCameraController(ref OVRCameraController cameraController)
-	{
-		CameraController = cameraController;
-		CameraController.GetCamera(ref MainCam);
-		if (CameraController.PortraitMode)
-		{
-			float deadZoneX = DeadZoneX;
-			DeadZoneX = DeadZoneY;
-			DeadZoneY = deadZoneX;
-		}
-	}
-
-	public void SetOVRPlayerController(ref OVRPlayerController playerController)
-	{
-		PlayerController = playerController;
-	}
-
-	public bool IsCrosshairVisible()
-	{
-		if (FadeVal > 0f)
-		{
-			return true;
-		}
-		return false;
-	}
-
-	public void Init()
-	{
-		DisplayCrosshair = false;
-		CollisionWithGeometry = false;
-		FadeVal = 0f;
-		ScreenWidth = Screen.width;
-		ScreenHeight = Screen.height;
-		XL = ScreenWidth * 0.5f;
-		YL = ScreenHeight * 0.5f;
-	}
-
-	public void UpdateCrosshair()
-	{
-		ShouldDisplayCrosshair();
-		CollisionWithGeometryCheck();
-	}
-
-	public void OnGUICrosshair()
-	{
-		if (DisplayCrosshair && !CollisionWithGeometry)
-		{
-			FadeVal += Time.deltaTime / FadeTime;
-		}
-		else
-		{
-			FadeVal -= Time.deltaTime / FadeTime;
-		}
-		FadeVal = Mathf.Clamp(FadeVal, 0f, 1f);
-		if (PlayerController != null)
-		{
-			PlayerController.SetAllowMouseRotation(false);
-		}
-		if (!(ImageCrosshair != null) || FadeVal == 0f)
-		{
-			return;
-		}
-		if (PlayerController != null)
-		{
-			PlayerController.SetAllowMouseRotation(true);
-		}
-		GUI.color = new Color(1f, 1f, 1f, FadeVal * FadeScale);
-		XL += Input.GetAxis("Mouse X") * ScaleSpeedX;
-		if (XL < DeadZoneX)
-		{
-			if (PlayerController != null)
-			{
-				PlayerController.SetAllowMouseRotation(false);
-			}
-			XL = DeadZoneX - 0.001f;
-		}
-		else if (XL > (float)Screen.width - DeadZoneX)
-		{
-			if (PlayerController != null)
-			{
-				PlayerController.SetAllowMouseRotation(false);
-			}
-			XL = ScreenWidth - DeadZoneX + 0.001f;
-		}
-		YL -= Input.GetAxis("Mouse Y") * ScaleSpeedY;
-		if (YL < DeadZoneY)
-		{
-			if (YL < 0f)
-			{
-				YL = 0f;
-			}
-		}
-		else if (YL > ScreenHeight - DeadZoneY && YL > ScreenHeight)
-		{
-			YL = ScreenHeight;
-		}
-		bool allowMouseRotation = true;
-		if (PlayerController != null)
-		{
-			PlayerController.GetAllowMouseRotation(ref allowMouseRotation);
-		}
-		if (allowMouseRotation)
-		{
-			GUI.DrawTexture(new Rect(XL - (float)ImageCrosshair.width * 0.5f, YL - (float)ImageCrosshair.height * 0.5f, ImageCrosshair.width, ImageCrosshair.height), ImageCrosshair);
-		}
-		GUI.color = Color.white;
-	}
-
-	private bool ShouldDisplayCrosshair()
-	{
-		if (Input.GetKeyDown(KeyCode.C))
-		{
-			if (!DisplayCrosshair)
-			{
-				DisplayCrosshair = true;
-				XL = ScreenWidth * 0.5f;
-				YL = ScreenHeight * 0.5f;
-			}
-			else
-			{
-				DisplayCrosshair = false;
-			}
-		}
-		return DisplayCrosshair;
-	}
-
-	private bool CollisionWithGeometryCheck()
-	{
-		CollisionWithGeometry = false;
-		Vector3 position = MainCam.transform.position;
-		Vector3 forward = Vector3.forward;
-		forward = MainCam.transform.rotation * forward;
-		forward *= CrosshairDistance;
-		Vector3 end = position + forward;
-		RaycastHit hitInfo;
-		if (Physics.Linecast(position, end, out hitInfo) && !hitInfo.collider.isTrigger)
-		{
-			CollisionWithGeometry = true;
-		}
-		return CollisionWithGeometry;
-	}
+	*/
 }

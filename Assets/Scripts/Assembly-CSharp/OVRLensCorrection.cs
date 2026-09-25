@@ -1,65 +1,63 @@
 using UnityEngine;
 
-[AddComponentMenu("Image Effects/OVRLensCorrection")]
-public class OVRLensCorrection : OVRImageEffectBase
+public class OVRLensCorrection : MonoBehaviour
 {
-	[HideInInspector]
-	public Vector2 _Center = new Vector2(0.5f, 0.5f);
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	[HideInInspector]
-	public Vector2 _ScaleIn = new Vector2(1f, 1f);
+	1. No dll files were provided to AssetRipper.
 
-	[HideInInspector]
-	public Vector2 _Scale = new Vector2(1f, 1f);
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	[HideInInspector]
-	public Vector4 _HmdWarpParam = new Vector4(1f, 0f, 0f, 0f);
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public Material material_CA;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	[HideInInspector]
-	public Vector4 _ChromaticAberration = new Vector4(0.996f, 0.992f, 1.014f, 1.014f);
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Material GetMaterial(bool portrait)
-	{
-		SetPortraitProperties(portrait, ref material);
-		material.SetVector("_HmdWarpParam", _HmdWarpParam);
-		return material;
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	public Material GetMaterial_CA(bool portrait)
-	{
-		SetPortraitProperties(portrait, ref material_CA);
-		material_CA.SetVector("_HmdWarpParam", _HmdWarpParam);
-		Vector4 chromaticAberration = _ChromaticAberration;
-		float value = chromaticAberration[1] - chromaticAberration[0];
-		float value2 = chromaticAberration[3] - chromaticAberration[2];
-		chromaticAberration[1] = value;
-		chromaticAberration[3] = value2;
-		material_CA.SetVector("_ChromaticAberration", chromaticAberration);
-		return material_CA;
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private void SetPortraitProperties(bool portrait, ref Material m)
-	{
-		if (portrait)
-		{
-			Vector2 zero = Vector2.zero;
-			zero.x = _Center.y;
-			zero.y = _Center.x;
-			m.SetVector("_Center", zero);
-			zero.x = _Scale.y;
-			zero.y = _Scale.x;
-			m.SetVector("_Scale", zero);
-			zero.x = _ScaleIn.y;
-			zero.y = _ScaleIn.x;
-			m.SetVector("_ScaleIn", zero);
-		}
-		else
-		{
-			m.SetVector("_Center", _Center);
-			m.SetVector("_Scale", _Scale);
-			m.SetVector("_ScaleIn", _ScaleIn);
-		}
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
+
+	4. This script is unnecessary.
+
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

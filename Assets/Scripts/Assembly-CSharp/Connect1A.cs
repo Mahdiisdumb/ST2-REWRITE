@@ -1,127 +1,63 @@
-using ExitGames.Client.Photon;
-using Photon;
 using UnityEngine;
 
-public class Connect1A : Photon.MonoBehaviour
+public class Connect1A : MonoBehaviour
 {
-	private void Awake()
-	{
-		PhotonNetwork.ConnectUsingSettings("1.0");
-	}
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private void OnGUI()
-	{
-		if (!PhotonNetwork.connected && !PhotonNetwork.connecting)
-		{
-			GUILayout.Label("Connection status: Disconnected");
-			GUILayout.BeginVertical();
-			if (GUILayout.Button("Connect"))
-			{
-				PhotonNetwork.ConnectUsingSettings("1.0");
-			}
-			GUILayout.EndVertical();
-		}
-		else if (PhotonNetwork.connected)
-		{
-			GUILayout.Label("Connection status: Connected");
-			GUILayout.Label("Ping to server: " + PhotonNetwork.GetPing());
-			if (GUILayout.Button("Disconnect"))
-			{
-				PhotonNetwork.Disconnect();
-			}
-		}
-		else
-		{
-			GUILayout.Label("Connection status: " + PhotonNetwork.connectionState);
-		}
-	}
+	1. No dll files were provided to AssetRipper.
 
-	private void OnConnectedToPhoton()
-	{
-		Debug.Log("This client has connected to a server");
-	}
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	private void OnDisconnectedFromPhoton()
-	{
-		Debug.Log("This client has disconnected from the server");
-	}
+	2. Incorrect dll files were provided to AssetRipper.
 
-	private void OnFailedToConnectToPhoton(StatusCode status)
-	{
-		Debug.Log("Failed to connect to Photon: " + status);
-	}
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	private void OnCreatedRoom()
-	{
-		Debug.Log("We have created a room.");
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	private void OnJoinedRoom()
-	{
-		Debug.Log("We have joined a room.");
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	private void OnLeftRoom()
-	{
-		Debug.Log("This client has left a game room.");
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private void OnPhotonCreateRoomFailed()
-	{
-		Debug.Log("A CreateRoom call failed, most likely the room name is already in use.");
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private void OnPhotonJoinRoomFailed()
-	{
-		Debug.Log("A JoinRoom call failed, most likely the room name does not exist or is full.");
-	}
+	4. This script is unnecessary.
 
-	private void OnPhotonRandomJoinFailed()
-	{
-		Debug.Log("A JoinRandom room call failed, most likely there are no rooms available.");
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private void OnJoinedLobby()
-	{
-		Debug.Log("We joined the lobby.");
-	}
+	5. Script Content Level 0
 
-	private void OnLeftLobby()
-	{
-		Debug.Log("We left the lobby.");
-	}
+		AssetRipper was set to not load any script information.
 
-	private void OnReceivedRoomList()
-	{
-		Debug.Log("We received a new room list, total rooms: " + PhotonNetwork.GetRoomList().Length);
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private void OnReceivedRoomListUpdate()
-	{
-		Debug.Log("We received a room list update, total rooms now: " + PhotonNetwork.GetRoomList().Length);
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private void OnPhotonPlayerConnected(PhotonPlayer player)
-	{
-		Debug.Log("Player connected: " + player);
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	private void OnPhotonPlayerDisconnected(PhotonPlayer player)
-	{
-		Debug.Log("Player disconnected: " + player);
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	private void OnMasterClientSwitched(PhotonPlayer newMaster)
-	{
-		Debug.Log("The old masterclient left, we have a new masterclient: " + newMaster);
-	}
-
-	private void OnPhotonInstantiate(PhotonMessageInfo info)
-	{
-		Debug.Log("New object instantiated by " + info.sender);
-	}
-
-	private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-	{
-	}
+	*/
 }

@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: panel05_d_0
   m_Shader: {fileID: 4, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
+  m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_CustomRenderQueue: -1
@@ -17,16 +17,16 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 4622ce4224d084c40bb45277a8bf5e24, type: 3}
+      _BumpMap:
+        m_Texture: {fileID: 2800000, guid: fe88bcdf951ff424992cb227c3fca7d6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: b95e6f57382daa247a94545f95d9f623, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: a17caf3c510b7bc4bb2a18e93d130dd7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Shininess: 0.078125
+      _Shininess: 0.078125
     m_Colors:
-    - _Color: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    - _SpecColor: {r: 0.9104478, g: 0.9104478, b: 0.9104478, a: 1}
+      _Color: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      _SpecColor: {r: 0.9104478, g: 0.9104478, b: 0.9104478, a: 1}

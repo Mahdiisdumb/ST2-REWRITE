@@ -1,156 +1,63 @@
-using System.Collections;
-using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
 
 public class Login : MonoBehaviour
 {
-	public GUISkin guiSkin;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private string user = "Username";
+	1. No dll files were provided to AssetRipper.
 
-	private string password = "Password";
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public string[] accountInfo;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public bool attempt;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public bool isError;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public bool noConnection;
+	3. Assembly Reconstruction has not been implemented.
 
-	public GameObject deactivate;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	private string back = "Back";
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private string login = "Login";
+	4. This script is unnecessary.
 
-	private string username2 = "Username";
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private string password2 = "Password";
+	5. Script Content Level 0
 
-	private string tryagain = "Try Again";
+		AssetRipper was set to not load any script information.
 
-	private string connecting = "Connecting To Server...";
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private string connect = "Connect";
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private string error1 = "Error: Incorrect Username / Password!";
+	7. An incorrect path was provided to AssetRipper.
 
-	private string error2 = "Error: Could Not Connect To Server!";
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	private void OnEnable()
-	{
-		deactivate.SetActive(false);
-	}
-
-	private void OnDisable()
-	{
-		deactivate.SetActive(true);
-	}
-
-	private void Awake()
-	{
-		if (PlayerPrefs.GetInt("language") == 1)
-		{
-			back = "Volver";
-			login = "Iniciar Sesión";
-			username2 = "Nombre de Usuario";
-			password2 = "Contraseña";
-			tryagain = "Intentar de Nuevo";
-			connecting = "Conectando al Servidor...";
-			connect = "Conectar";
-			error1 = "Error: ¡Nombre de Usuario/Contraseña Incorrecta!";
-			error2 = "Error: ¡No se pudo conectar al servidor!";
-		}
-	}
-
-	private void OnGUI()
-	{
-		GUI.skin = guiSkin;
-		if (GUI.Button(new Rect(10f, 10f, 120f, 60f), back))
-		{
-			base.enabled = false;
-			GameObject.Find("root").GetComponent<Menu2Root>().Show("Main Menu");
-		}
-		GUI.Box(new Rect(Screen.width / 2 - 290, 200f, 580f, 250f), login);
-		if (!noConnection)
-		{
-			if (!attempt)
-			{
-				GUI.Label(new Rect(Screen.width / 2 - 125, 250f, 250f, 20f), username2);
-				user = GUI.TextField(new Rect(Screen.width / 2 - 125, 270f, 250f, 30f), user);
-				GUI.Label(new Rect(Screen.width / 2 - 125, 320f, 250f, 20f), password2);
-				password = GUI.PasswordField(new Rect(Screen.width / 2 - 125, 340f, 250f, 30f), password, "*"[0]);
-				if (GUI.Button(new Rect(Screen.width / 2 - 125, 390f, 250f, 40f), connect))
-				{
-					StartCoroutine(loginNow());
-				}
-			}
-			else if (!isError)
-			{
-				GUI.Label(new Rect(Screen.width / 2 - 200, 310f, 400f, 20f), connecting);
-			}
-			else
-			{
-				GUI.Label(new Rect(Screen.width / 2 - 200, 310f, 400f, 20f), error1);
-				if (GUI.Button(new Rect(Screen.width / 2 - 125, 390f, 250f, 40f), tryagain))
-				{
-					noConnection = false;
-					attempt = false;
-					isError = false;
-				}
-			}
-		}
-		else
-		{
-			GUI.Label(new Rect(Screen.width / 2 - 200, 310f, 400f, 20f), error2);
-			if (GUI.Button(new Rect(Screen.width / 2 - 125, 390f, 250f, 40f), tryagain))
-			{
-				noConnection = false;
-				attempt = false;
-				isError = false;
-			}
-		}
-	}
-
-	private IEnumerator loginNow()
-	{
-		attempt = true;
-		WWWForm form = new WWWForm();
-		string user2 = user;
-		form.AddField("user", user2);
-		form.AddField("password", password);
-		WWW w = new WWW("http://zeoworks.com/home/getlogin.php", form);
-		yield return w;
-		if (w.error == null)
-		{
-			if (w.text == "0" || w.text == string.Empty)
-			{
-				isError = true;
-				MonoBehaviour.print("wrong details..");
-				yield break;
-			}
-			accountInfo = w.text.Split(","[0]);
-			if (accountInfo[2] == string.Empty)
-			{
-				accountInfo[2] = "images/default_avatar.png";
-			}
-			if (accountInfo[2].Contains("./"))
-			{
-				accountInfo[2] = accountInfo[2].Replace("./", string.Empty);
-			}
-			ObscuredPrefs.SetString("ZWName", accountInfo[1]);
-			ObscuredPrefs.SetString("PlayerType", accountInfo[3]);
-			GameObject.Find("root").GetComponent<Menu2Root>().Show("Main Menu");
-			GameObject.Find("root").GetComponent<Menu2Root>().haslogin = true;
-			noConnection = false;
-			attempt = false;
-			isError = false;
-			base.enabled = false;
-		}
-		else
-		{
-			noConnection = true;
-		}
-	}
+	*/
 }

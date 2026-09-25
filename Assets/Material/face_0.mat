@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: face_0
   m_Shader: {fileID: 7, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
+  m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_CustomRenderQueue: -1
@@ -17,17 +17,17 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c48d0778a95b7d94fb6ed43f768bb859, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 9aa4c20d4be28b64b840d2afe65263f6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Cutoff: 0.0001
-    - _EdgeFade: 1
-    - _FurLength: 0.035757143
+      _Cutoff: 0.0001
+      _EdgeFade: 1
+      _FurLength: 0.035757143
     m_Colors:
-    - _Color: {r: 0.66176474, g: 0.6568988, b: 0.6568988, a: 1}
-    - _LightDirection0: {r: 1, g: 0, b: 0, a: 1}
-    - _LightDirection1: {r: 1, g: 0, b: 0, a: 1}
-    - _MyLightColor0: {r: 0.20784314, g: 0.20784314, b: 0.20784314, a: 1}
-    - _MyLightColor1: {r: 0, g: 0, b: 0, a: 1}
+      _Color: {r: 0.66176474, g: 0.6568988, b: 0.6568988, a: 1}
+      _LightDirection0: {r: 1, g: 0, b: 0, a: 1}
+      _LightDirection1: {r: 1, g: 0, b: 0, a: 1}
+      _MyLightColor0: {r: 0.20784314, g: 0.20784314, b: 0.20784314, a: 1}
+      _MyLightColor1: {r: 0, g: 0, b: 0, a: 1}

@@ -1,89 +1,63 @@
-using Photon;
 using UnityEngine;
 
-public class MenuScript : Photon.MonoBehaviour
+public class MenuScript : MonoBehaviour
 {
-	private void OnGUI()
-	{
-		GUILayout.BeginArea(new Rect(Screen.width / 2 - 225, 0f, 450f, Screen.height));
-		GUILayout.FlexibleSpace();
-		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		GUILayout.Label("Select a scene");
-		GUILayout.FlexibleSpace();
-		GUILayout.EndHorizontal();
-		GUILayout.Space(10f);
-		GUILayout.BeginHorizontal();
-		GUILayout.BeginVertical();
-		GUILayout.Label("In this package:");
-		GUILayout.Space(10f);
-		if (GUILayout.Button("Tutorial 1A - Connect"))
-		{
-			Application.LoadLevel("Tutorial_1A");
-		}
-		if (GUILayout.Button("Tutorial 1B - Connect"))
-		{
-			Application.LoadLevel("Tutorial_1B");
-		}
-		if (GUILayout.Button("Tutorial 1C - Connect"))
-		{
-			Application.LoadLevel("Tutorial_1C");
-		}
-		GUILayout.Space(10f);
-		if (GUILayout.Button("Tutorial 2A1 - Observe transform"))
-		{
-			Application.LoadLevel("Tutorial_2A1");
-		}
-		if (GUILayout.Button("Tutorial 2A2 - Observe code"))
-		{
-			Application.LoadLevel("Tutorial_2A2");
-		}
-		if (GUILayout.Button("Tutorial 2A3 - RPC"))
-		{
-			Application.LoadLevel("Tutorial_2A3");
-		}
-		if (GUILayout.Button("Tutorial 2B - Instantiating"))
-		{
-			Application.LoadLevel("Tutorial_2B");
-		}
-		GUILayout.Space(10f);
-		GUILayout.EndVertical();
-		GUILayout.Space(30f);
-		GUILayout.BeginVertical();
-		GUILayout.Label("In the full guide:");
-		GUILayout.Space(10f);
-		if (GUILayout.Button("Tutorial 3 - Authoritative server"))
-		{
-			Application.LoadLevel("Tutorial_3");
-		}
-		GUILayout.Space(10f);
-		if (GUILayout.Button("Tutorial 4 - Allocate PhotonViews"))
-		{
-			Application.LoadLevel("Tutorial_4");
-		}
-		if (GUILayout.Button("Example 1 - Chat"))
-		{
-			Application.LoadLevel("Example1_Chat");
-		}
-		if (GUILayout.Button("Example 2 - Masterserver"))
-		{
-			Application.LoadLevel("Example2_menu");
-		}
-		if (GUILayout.Button("Example 3 - Lobby"))
-		{
-			Application.LoadLevel("Example3_lobbymenu");
-		}
-		if (GUILayout.Button("Example 4 - FPS game"))
-		{
-			Application.LoadLevel("Example4_Menu");
-		}
-		if (GUILayout.Button("Example 5 - Auto matchmaking"))
-		{
-			Application.LoadLevel("Example5_Game");
-		}
-		GUILayout.EndVertical();
-		GUILayout.EndHorizontal();
-		GUILayout.FlexibleSpace();
-		GUILayout.EndArea();
-	}
+	/*
+	Dummy class. This could have happened for several reasons:
+
+	1. No dll files were provided to AssetRipper.
+
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
+
+	2. Incorrect dll files were provided to AssetRipper.
+
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
+
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
+
+	3. Assembly Reconstruction has not been implemented.
+
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
+
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
+
+	4. This script is unnecessary.
+
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

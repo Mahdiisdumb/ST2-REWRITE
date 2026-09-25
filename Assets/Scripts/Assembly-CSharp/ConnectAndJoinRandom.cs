@@ -1,54 +1,63 @@
-using Photon;
 using UnityEngine;
 
-public class ConnectAndJoinRandom : Photon.MonoBehaviour
+public class ConnectAndJoinRandom : MonoBehaviour
 {
-	public bool AutoConnect = true;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	private bool ConnectInUpdate = true;
+	1. No dll files were provided to AssetRipper.
 
-	public virtual void Start()
-	{
-		PhotonNetwork.autoJoinLobby = false;
-	}
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public virtual void Update()
-	{
-		if (ConnectInUpdate && AutoConnect)
-		{
-			Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
-			ConnectInUpdate = false;
-			PhotonNetwork.ConnectUsingSettings("1");
-		}
-	}
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public virtual void OnConnectedToMaster()
-	{
-		Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
-		PhotonNetwork.JoinRandomRoom();
-	}
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public virtual void OnPhotonRandomJoinFailed()
-	{
-		Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
-		PhotonNetwork.CreateRoom(null, new RoomOptions
-		{
-			maxPlayers = 4
-		}, null);
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
-	{
-		Debug.LogError("Cause: " + cause);
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	public void OnJoinedRoom()
-	{
-		Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running. For reference, all callbacks are listed in enum: PhotonNetworkingMessage");
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public virtual void OnJoinedLobby()
-	{
-		Debug.Log("OnJoinedLobby(). Use a GUI to show existing rooms available in PhotonNetwork.GetRoomList().");
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
+
+	4. This script is unnecessary.
+
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
+
+	5. Script Content Level 0
+
+		AssetRipper was set to not load any script information.
+
+	6. Cpp2IL failed to decompile Il2Cpp data
+
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
+
+	7. An incorrect path was provided to AssetRipper.
+
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }

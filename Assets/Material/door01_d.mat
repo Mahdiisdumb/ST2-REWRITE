@@ -17,27 +17,27 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 0dc38b10e40585442acd0ffa5620efac, type: 3}
+      _BumpMap:
+        m_Texture: {fileID: 2800000, guid: ddd9c7f979190ef4f965b43894156c43, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Illum:
-        m_Texture: {fileID: 2800000, guid: 54b40a16a5839a94ba5fc8ab5ff40538, type: 3}
+      _Illum:
+        m_Texture: {fileID: 2800000, guid: 417440c66f6597b4e99fa656321aa00d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 3b8a4b52ac2108c4c9085cb73712e37b, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: adba29ed916a71844939c126980b81ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 2800000, guid: c48e39ea840028141a1a1dab51cfe9fd, type: 3}
+      _ParallaxMap:
+        m_Texture: {fileID: 2800000, guid: 111cf897cf3f6944f98a3287f952047e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Emission: 1
-    - _EmissionLM: 50
-    - _Parallax: 0.02
-    - _Shininess: 0.3209552
+      _Emission: 1
+      _EmissionLM: 50
+      _Parallax: 0.02
+      _Shininess: 0.3209552
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecColor: {r: 0.7982683, g: 0.92537314, b: 0.73201156, a: 1}
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _SpecColor: {r: 0.7982683, g: 0.92537314, b: 0.73201156, a: 1}

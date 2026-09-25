@@ -57,8 +57,7 @@ Mesh:
     e31: 0
     e32: 0
     e33: 1
-  m_BoneNameHashes:
-  - 1977903014
+  m_BoneNameHashes: a667e475
   m_RootBoneNameHash: 1977903014
   m_MeshCompression: 0
   m_IsReadable: 1

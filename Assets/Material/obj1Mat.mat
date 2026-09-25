@@ -17,19 +17,19 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Illum:
+      _Illum:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 965b0a690758f0f4d83d4e93d4391a55, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 8efb8bdf670fd7845bd30c981f7a0a3e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Emission: 1
-    - _EmissionLM: 0
-    - _Shininess: 0.7
+      _Emission: 1
+      _EmissionLM: 0
+      _Shininess: 0.7
     m_Colors:
-    - _Color: {r: 0.43382353, g: 0.44020328, b: 0.44020328, a: 1}
-    - _Emission: {r: 0, g: 0, b: 0, a: 0}
-    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
+      _Color: {r: 0.43382353, g: 0.44020328, b: 0.44020328, a: 1}
+      _Emission: {r: 0, g: 0, b: 0, a: 0}
+      _SpecColor: {r: 1, g: 1, b: 1, a: 1}

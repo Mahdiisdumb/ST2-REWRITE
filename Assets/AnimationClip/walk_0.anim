@@ -2,11 +2,11 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!74 &7400000
 AnimationClip:
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: walk_0
-  serializedVersion: 6
   m_Legacy: 1
   m_Compressed: 0
   m_UseHighQualityCurve: 1
@@ -258,15 +258,15 @@ AnimationClip:
         tangentMode: 0
       - serializedVersion: 2
         time: 0.3333333
-        value: {x: 0.0045261937, y: -0.23422444, z: -0.00003820647, w: 0.972172}
+        value: {x: 0.0045261937, y: -0.23422444, z: -3.820647E-05, w: 0.972172}
         inSlope: {x: 0.0078088287, y: -0.0009178516, z: 0.23172857, w: -0.0002481928}
         outSlope: {x: 0.0078088287, y: -0.0009178516, z: 0.23172857, w: -0.0002481928}
         tangentMode: 0
       - serializedVersion: 2
         time: 0.49999997
         value: {x: 0.0052138786, y: -0.23444666, z: 0.020015787, w: 0.9719089}
-        inSlope: {x: 0.00003901192, y: 0.01399715, z: 0.0074183084, w: 0.003347072}
-        outSlope: {x: 0.00003901192, y: 0.01399715, z: 0.0074183084, w: 0.003347072}
+        inSlope: {x: 3.901192E-05, y: 0.01399715, z: 0.0074183084, w: 0.003347072}
+        outSlope: {x: 3.901192E-05, y: 0.01399715, z: 0.0074183084, w: 0.003347072}
         tangentMode: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -518,8 +518,8 @@ AnimationClip:
       - serializedVersion: 2
         time: 0.49999997
         value: {x: 0.06750051, y: 0.9959321, z: 0.023000687, w: -0.055080872}
-        inSlope: {x: -0.0032431893, y: 0.0005068563, z: -0.000063932086, w: 0.00487648}
-        outSlope: {x: -0.0032431893, y: 0.0005068563, z: -0.000063932086, w: 0.00487648}
+        inSlope: {x: -0.0032431893, y: 0.0005068563, z: -6.3932086E-05, w: 0.00487648}
+        outSlope: {x: -0.0032431893, y: 0.0005068563, z: -6.3932086E-05, w: 0.00487648}
         tangentMode: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -1137,13 +1137,13 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0
-        value: {x: -0, y: 1.9721521e-32, z: 1.9721521e-32}
+        value: {x: -0, y: 1.9721521E-32, z: 1.9721521E-32}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
       - serializedVersion: 2
         time: 0.49999997
-        value: {x: -0, y: 1.9721521e-32, z: 1.9721521e-32}
+        value: {x: -0, y: 1.9721521E-32, z: 1.9721521E-32}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0

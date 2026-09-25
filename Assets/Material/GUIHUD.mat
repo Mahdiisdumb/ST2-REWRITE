@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: GUIHUD
-  m_Shader: {fileID: 4800000, guid: 7f6e4458844ef604a8e7d7dc0ced3962, type: 3}
+  m_Shader: {fileID: 4800000, guid: 74fe79c5e78c493418f70331bc07b29d, type: 3}
   m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -16,12 +16,8 @@ Material:
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: {}
     m_Floats:
-    - _Cutoff: 0.5
+      _Cutoff: 0.5
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+      _Color: {r: 1, g: 1, b: 1, a: 1}

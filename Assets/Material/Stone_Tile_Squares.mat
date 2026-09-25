@@ -17,16 +17,16 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 5f6dda10299d0bb488ffbc49407959be, type: 3}
+      _BumpMap:
+        m_Texture: {fileID: 2800000, guid: a6cc1ddb58c06534487570500bdc1253, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 74f4a478edefcdb47b7588ea2c6282c1, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 986492b4b54801940839fca7f9bc0894, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Shininess: 0.078125
+      _Shininess: 0.078125
     m_Colors:
-    - _Color: {r: 0.36764705, g: 0.36764705, b: 0.36764705, a: 1}
-    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+      _Color: {r: 0.36764705, g: 0.36764705, b: 0.36764705, a: 1}
+      _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

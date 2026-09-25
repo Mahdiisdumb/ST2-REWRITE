@@ -87,11 +87,7 @@ Mesh:
     e31: 0
     e32: 0
     e33: 1
-  m_BoneNameHashes:
-  - 2424880008
-  - 1977903014
-  - 3533149372
-  - 951199448
+  m_BoneNameHashes: 88bb8890a667e475bc9497d2d826b238
   m_RootBoneNameHash: 3533149372
   m_MeshCompression: 0
   m_IsReadable: 1

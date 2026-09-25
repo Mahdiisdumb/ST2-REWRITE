@@ -1,143 +1,63 @@
-using System.Collections;
-using Photon;
 using UnityEngine;
 
-public class ChangeSkin : Photon.MonoBehaviour
+public class ChangeSkin : MonoBehaviour
 {
-	public string haturl;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public string headurl;
+	1. No dll files were provided to AssetRipper.
 
-	public string bodyurl;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public string armsurl;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public string legsurl;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public Transform spotLight;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public Texture2D head;
+	3. Assembly Reconstruction has not been implemented.
 
-	public Texture2D body;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public Texture2D arms;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public Texture2D legs;
+	4. This script is unnecessary.
 
-	public Texture2D hat;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public Transform headmat;
+	5. Script Content Level 0
 
-	public Transform bodymat;
+		AssetRipper was set to not load any script information.
 
-	public Transform leftarmmat;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public Transform rightarmmat;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public Transform leftlegmat;
+	7. An incorrect path was provided to AssetRipper.
 
-	public Transform rightlegmat;
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public Transform hatmat;
-
-	public bool haschanged;
-
-	private Material[] headmats = new Material[3];
-
-	private void Awake()
-	{
-		GameObject[] array = GameObject.FindGameObjectsWithTag("Player");
-		if (array.Length > 6 && !base.photonView.isMine)
-		{
-			spotLight.gameObject.active = false;
-		}
-		if (base.photonView.isMine && PlayerPrefs.GetInt("CS") == 2)
-		{
-			haturl = PlayerPrefs.GetString("haturl");
-			headurl = PlayerPrefs.GetString("headurl");
-			bodyurl = PlayerPrefs.GetString("bodyurl");
-			armsurl = PlayerPrefs.GetString("armsurl");
-			legsurl = PlayerPrefs.GetString("legsurl");
-		}
-		if (PlayerPrefs.GetInt("CS") != 2 && base.photonView.isMine)
-		{
-			haturl = "n";
-		}
-	}
-
-	private void Update()
-	{
-		if (!haschanged && (haturl != string.Empty || headurl != string.Empty || bodyurl != string.Empty || armsurl != string.Empty || legsurl != string.Empty))
-		{
-			StartCoroutine(ChangeSkinNow());
-		}
-	}
-
-	private IEnumerator ChangeSkinNow()
-	{
-		haschanged = true;
-		UnityEngine.MonoBehaviour.print("NewSKIN");
-		if (haturl.Contains(".png") || haturl.Contains(".jpg") || haturl.Contains(".PNG"))
-		{
-			WWW www5 = new WWW(haturl);
-			yield return www5;
-			hat = www5.texture;
-			hatmat.GetComponent<Renderer>().material.mainTexture = hat;
-		}
-		if (bodyurl.Contains(".png") || bodyurl.Contains(".jpg") || bodyurl.Contains(".PNG"))
-		{
-			WWW www4 = new WWW(bodyurl);
-			yield return www4;
-			body = www4.texture;
-			bodymat.GetComponent<Renderer>().material.mainTexture = body;
-		}
-		if (headurl.Contains(".png") || headurl.Contains(".jpg") || headurl.Contains(".PNG"))
-		{
-			WWW www3 = new WWW(headurl);
-			yield return www3;
-			head = www3.texture;
-			headmat.GetComponent<Renderer>().materials[0].mainTexture = head;
-			if (body != null)
-			{
-				headmat.GetComponent<Renderer>().materials[1].mainTexture = body;
-				headmat.GetComponent<Renderer>().materials[2].mainTexture = body;
-			}
-		}
-		if (armsurl.Contains(".png") || armsurl.Contains(".jpg") || armsurl.Contains(".PNG"))
-		{
-			WWW www2 = new WWW(armsurl);
-			yield return www2;
-			arms = www2.texture;
-			leftarmmat.GetComponent<Renderer>().material.mainTexture = arms;
-			rightarmmat.GetComponent<Renderer>().material.mainTexture = arms;
-		}
-		if (legsurl.Contains(".png") || legsurl.Contains(".jpg") || legsurl.Contains(".PNG"))
-		{
-			WWW www = new WWW(legsurl);
-			yield return www;
-			legs = www.texture;
-			leftlegmat.GetComponent<Renderer>().material.mainTexture = legs;
-			rightlegmat.GetComponent<Renderer>().material.mainTexture = legs;
-		}
-	}
-
-	private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-	{
-		if (stream.isWriting)
-		{
-			stream.SendNext(haturl);
-			stream.SendNext(headurl);
-			stream.SendNext(bodyurl);
-			stream.SendNext(armsurl);
-			stream.SendNext(legsurl);
-		}
-		else
-		{
-			haturl = (string)stream.ReceiveNext();
-			headurl = (string)stream.ReceiveNext();
-			bodyurl = (string)stream.ReceiveNext();
-			armsurl = (string)stream.ReceiveNext();
-			legsurl = (string)stream.ReceiveNext();
-		}
-	}
+	*/
 }

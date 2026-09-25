@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: ear_3
   m_Shader: {fileID: 7, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
+  m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_CustomRenderQueue: -1
@@ -17,10 +17,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 12b6144449ba24845b6a2244f675d06e, type: 3}
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 5e86e2f5cdab6b0409c764939675ba36, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Floats: []
+    m_Floats: {}
     m_Colors:
-    - _Color: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}
+      _Color: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}

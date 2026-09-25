@@ -1,84 +1,63 @@
-public class ParameterCode
+using UnityEngine;
+
+public class ParameterCode : MonoBehaviour
 {
-	public const byte SuppressRoomEvents = 237;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public const byte EventForward = 234;
+	1. No dll files were provided to AssetRipper.
 
-	public const byte Address = 230;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public const byte PeerCount = 229;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public const byte GameCount = 228;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public const byte MasterPeerCount = 227;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public const byte UserId = 225;
+	3. Assembly Reconstruction has not been implemented.
 
-	public const byte ApplicationId = 224;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public const byte Position = 223;
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public const byte MatchMakingType = 223;
+	4. This script is unnecessary.
 
-	public const byte GameList = 222;
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public const byte Secret = 221;
+	5. Script Content Level 0
 
-	public const byte AppVersion = 220;
+		AssetRipper was set to not load any script information.
 
-	public const byte RoomName = byte.MaxValue;
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public const byte Broadcast = 250;
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public const byte ActorList = 252;
+	7. An incorrect path was provided to AssetRipper.
 
-	public const byte ActorNr = 254;
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public const byte PlayerProperties = 249;
-
-	public const byte CustomEventContent = 245;
-
-	public const byte Data = 245;
-
-	public const byte Code = 244;
-
-	public const byte GameProperties = 248;
-
-	public const byte Properties = 251;
-
-	public const byte TargetActorNr = 253;
-
-	public const byte ReceiverGroup = 246;
-
-	public const byte Cache = 247;
-
-	public const byte CleanupCacheOnLeave = 241;
-
-	public const byte Group = 240;
-
-	public const byte Remove = 239;
-
-	public const byte Add = 238;
-
-	public const byte ClientAuthenticationType = 217;
-
-	public const byte ClientAuthenticationParams = 216;
-
-	public const byte CreateIfNotExists = 215;
-
-	public const byte ClientAuthenticationData = 214;
-
-	public const byte LobbyName = 213;
-
-	public const byte LobbyType = 212;
-
-	public const byte LobbyStats = 211;
-
-	public const byte FindFriendsRequestList = 1;
-
-	public const byte FindFriendsResponseOnlineList = 1;
-
-	public const byte FindFriendsResponseRoomIdList = 2;
-
-	public const byte Region = 210;
+	*/
 }

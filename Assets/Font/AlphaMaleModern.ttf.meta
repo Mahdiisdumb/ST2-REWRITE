@@ -1,10 +1,24 @@
 fileFormatVersion: 2
-guid: 95058c8e0b58b2c4595da8e3153ac075
-timeCreated: 1673473436
+guid: 903cbd91272380d429a173e92d5e2c86
+timeCreated: 1790373884
 licenseType: Free
-NativeFormatImporter:
+TrueTypeFontImporter:
+  serializedVersion: 4
   name:
-  mainObjectFileID: 12800000
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: AlphaMaleModern
+  fontNames:
+  - AlphaMaleModern
+  fallbackFontReferences: []
+  customCharacters:
+  fontRenderingMode: 0
+  output:
+    hasEmptyFontData: 0
+  ascentCalculationMode: 1
   userData:
   assetBundleName:
   assetBundleVariant:

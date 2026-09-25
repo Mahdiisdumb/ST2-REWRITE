@@ -1,207 +1,63 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PhotonStream
+public class PhotonStream : MonoBehaviour
 {
-	private bool write;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	internal List<object> data;
+	1. No dll files were provided to AssetRipper.
 
-	private byte currentItem;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	public bool isWriting
-	{
-		get
-		{
-			return write;
-		}
-	}
+	2. Incorrect dll files were provided to AssetRipper.
 
-	public bool isReading
-	{
-		get
-		{
-			return !write;
-		}
-	}
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	public int Count
-	{
-		get
-		{
-			return data.Count;
-		}
-	}
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	public PhotonStream(bool write, object[] incomingData)
-	{
-		this.write = write;
-		if (incomingData == null)
-		{
-			data = new List<object>();
-		}
-		else
-		{
-			data = new List<object>(incomingData);
-		}
-	}
+	3. Assembly Reconstruction has not been implemented.
 
-	public object ReceiveNext()
-	{
-		if (write)
-		{
-			Debug.LogError("Error: you cannot read this stream that you are writing!");
-			return null;
-		}
-		object result = data[currentItem];
-		currentItem++;
-		return result;
-	}
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public void SendNext(object obj)
-	{
-		if (!write)
-		{
-			Debug.LogError("Error: you cannot write/send to this stream that you are reading!");
-		}
-		else
-		{
-			data.Add(obj);
-		}
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public object[] ToArray()
-	{
-		return data.ToArray();
-	}
+	4. This script is unnecessary.
 
-	public void Serialize(ref bool myBool)
-	{
-		if (write)
-		{
-			data.Add(myBool);
-		}
-		else if (data.Count > currentItem)
-		{
-			myBool = (bool)data[currentItem];
-			currentItem++;
-		}
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public void Serialize(ref int myInt)
-	{
-		if (write)
-		{
-			data.Add(myInt);
-		}
-		else if (data.Count > currentItem)
-		{
-			myInt = (int)data[currentItem];
-			currentItem++;
-		}
-	}
+	5. Script Content Level 0
 
-	public void Serialize(ref string value)
-	{
-		if (write)
-		{
-			data.Add(value);
-		}
-		else if (data.Count > currentItem)
-		{
-			value = (string)data[currentItem];
-			currentItem++;
-		}
-	}
+		AssetRipper was set to not load any script information.
 
-	public void Serialize(ref char value)
-	{
-		if (write)
-		{
-			data.Add(value);
-		}
-		else if (data.Count > currentItem)
-		{
-			value = (char)data[currentItem];
-			currentItem++;
-		}
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	public void Serialize(ref short value)
-	{
-		if (write)
-		{
-			data.Add(value);
-		}
-		else if (data.Count > currentItem)
-		{
-			value = (short)data[currentItem];
-			currentItem++;
-		}
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	public void Serialize(ref float obj)
-	{
-		if (write)
-		{
-			data.Add(obj);
-		}
-		else if (data.Count > currentItem)
-		{
-			obj = (float)data[currentItem];
-			currentItem++;
-		}
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	public void Serialize(ref PhotonPlayer obj)
-	{
-		if (write)
-		{
-			data.Add(obj);
-		}
-		else if (data.Count > currentItem)
-		{
-			obj = (PhotonPlayer)data[currentItem];
-			currentItem++;
-		}
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	public void Serialize(ref Vector3 obj)
-	{
-		if (write)
-		{
-			data.Add(obj);
-		}
-		else if (data.Count > currentItem)
-		{
-			obj = (Vector3)data[currentItem];
-			currentItem++;
-		}
-	}
-
-	public void Serialize(ref Vector2 obj)
-	{
-		if (write)
-		{
-			data.Add(obj);
-		}
-		else if (data.Count > currentItem)
-		{
-			obj = (Vector2)data[currentItem];
-			currentItem++;
-		}
-	}
-
-	public void Serialize(ref Quaternion obj)
-	{
-		if (write)
-		{
-			data.Add(obj);
-		}
-		else if (data.Count > currentItem)
-		{
-			obj = (Quaternion)data[currentItem];
-			currentItem++;
-		}
-	}
+	*/
 }

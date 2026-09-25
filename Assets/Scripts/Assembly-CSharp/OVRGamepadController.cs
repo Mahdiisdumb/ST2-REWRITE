@@ -1,106 +1,63 @@
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class OVRGamepadController : MonoBehaviour
 {
-	public enum Axis
-	{
-		LeftXAxis = 0,
-		LeftYAxis = 1,
-		RightXAxis = 2,
-		RightYAxis = 3,
-		LeftTrigger = 4,
-		RightTrigger = 5
-	}
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	public enum Button
-	{
-		A = 0,
-		B = 1,
-		X = 2,
-		Y = 3,
-		Up = 4,
-		Down = 5,
-		Left = 6,
-		Right = 7,
-		Start = 8,
-		Back = 9,
-		LStick = 10,
-		RStick = 11,
-		L1 = 12,
-		R1 = 13
-	}
+	1. No dll files were provided to AssetRipper.
 
-	private static bool GPC_Available;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	[DllImport("OculusPlugin")]
-	private static extern bool OVR_GamepadController_Initialize();
+	2. Incorrect dll files were provided to AssetRipper.
 
-	[DllImport("OculusPlugin")]
-	private static extern bool OVR_GamepadController_Destroy();
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	[DllImport("OculusPlugin")]
-	private static extern bool OVR_GamepadController_Update();
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	[DllImport("OculusPlugin")]
-	private static extern float OVR_GamepadController_GetAxis(int axis);
+	3. Assembly Reconstruction has not been implemented.
 
-	[DllImport("OculusPlugin")]
-	private static extern bool OVR_GamepadController_GetButton(int button);
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	public static bool GPC_Initialize()
-	{
-		return OVR_GamepadController_Initialize();
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	public static bool GPC_Destroy()
-	{
-		return OVR_GamepadController_Destroy();
-	}
+	4. This script is unnecessary.
 
-	public static bool GPC_Update()
-	{
-		return OVR_GamepadController_Update();
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	public static float GPC_GetAxis(int axis)
-	{
-		return OVR_GamepadController_GetAxis(axis);
-	}
+	5. Script Content Level 0
 
-	public static bool GPC_GetButton(int button)
-	{
-		return OVR_GamepadController_GetButton(button);
-	}
+		AssetRipper was set to not load any script information.
 
-	public static bool GPC_IsAvailable()
-	{
-		return GPC_Available;
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private void GPC_Test()
-	{
-		Debug.Log(string.Format("LT:{0:F3} RT:{1:F3} LX:{2:F3} LY:{3:F3} RX:{4:F3} RY:{5:F3}", GPC_GetAxis(4), GPC_GetAxis(5), GPC_GetAxis(0), GPC_GetAxis(1), GPC_GetAxis(2), GPC_GetAxis(3)));
-		Debug.Log(string.Format("A:{0} B:{1} X:{2} Y:{3} U:{4} D:{5} L:{6} R:{7} SRT:{8} BK:{9} LS:{10} RS:{11} L1{12} R1{13}", GPC_GetButton(0), GPC_GetButton(1), GPC_GetButton(2), GPC_GetButton(3), GPC_GetButton(4), GPC_GetButton(5), GPC_GetButton(6), GPC_GetButton(7), GPC_GetButton(8), GPC_GetButton(9), GPC_GetButton(10), GPC_GetButton(11), GPC_GetButton(12), GPC_GetButton(13)));
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private void Awake()
-	{
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	private void Start()
-	{
-		GPC_Available = GPC_Initialize();
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
 
-	private void Update()
-	{
-		GPC_Available = GPC_Update();
-	}
-
-	private void OnDestroy()
-	{
-		GPC_Destroy();
-		GPC_Available = false;
-	}
+	*/
 }

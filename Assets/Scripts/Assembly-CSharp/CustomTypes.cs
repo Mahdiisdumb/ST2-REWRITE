@@ -1,163 +1,63 @@
-using System;
-using System.Runtime.CompilerServices;
-using ExitGames.Client.Photon;
 using UnityEngine;
 
-internal static class CustomTypes
+public class CustomTypes : MonoBehaviour
 {
-	[CompilerGenerated]
-	private static SerializeMethod _003C_003Ef__mg_0024cache0;
+	/*
+	Dummy class. This could have happened for several reasons:
 
-	[CompilerGenerated]
-	private static DeserializeMethod _003C_003Ef__mg_0024cache1;
+	1. No dll files were provided to AssetRipper.
 
-	[CompilerGenerated]
-	private static SerializeMethod _003C_003Ef__mg_0024cache2;
+		Unity asset bundles and serialized files do not contain script information to decompile.
+			* For Mono games, that information is contained in .NET dll files.
+			* For Il2Cpp games, that information is contained in compiled C++ assemblies and the global metadata.
+			
+		AssetRipper usually expects games to conform to a normal file structure for Unity games of that platform.
+		A unexpected file structure could cause AssetRipper to not find the required files.
 
-	[CompilerGenerated]
-	private static DeserializeMethod _003C_003Ef__mg_0024cache3;
+	2. Incorrect dll files were provided to AssetRipper.
 
-	[CompilerGenerated]
-	private static SerializeMethod _003C_003Ef__mg_0024cache4;
+		Any of the following could cause this:
+			* Il2CppInterop assemblies
+			* Deobfuscated assemblies
+			* Older assemblies (compared to when the bundle was built)
+			* Newer assemblies (compared to when the bundle was built)
 
-	[CompilerGenerated]
-	private static DeserializeMethod _003C_003Ef__mg_0024cache5;
+		Note: Although assembly publicizing is bad, it alone cannot cause empty scripts. See: https://github.com/AssetRipper/AssetRipper/issues/653
 
-	[CompilerGenerated]
-	private static SerializeMethod _003C_003Ef__mg_0024cache6;
+	3. Assembly Reconstruction has not been implemented.
 
-	[CompilerGenerated]
-	private static DeserializeMethod _003C_003Ef__mg_0024cache7;
+		Asset bundles contain a small amount of information about the script content.
+		This information can be used to recover the serializable fields of a script.
 
-	internal static void Register()
-	{
-		Type typeFromHandle = typeof(Vector2);
-		if (_003C_003Ef__mg_0024cache0 == null)
-		{
-			_003C_003Ef__mg_0024cache0 = SerializeVector2;
-		}
-		SerializeMethod serializeMethod = _003C_003Ef__mg_0024cache0;
-		if (_003C_003Ef__mg_0024cache1 == null)
-		{
-			_003C_003Ef__mg_0024cache1 = DeserializeVector2;
-		}
-		PhotonPeer.RegisterType(typeFromHandle, 87, serializeMethod, _003C_003Ef__mg_0024cache1);
-		Type typeFromHandle2 = typeof(Vector3);
-		if (_003C_003Ef__mg_0024cache2 == null)
-		{
-			_003C_003Ef__mg_0024cache2 = SerializeVector3;
-		}
-		SerializeMethod serializeMethod2 = _003C_003Ef__mg_0024cache2;
-		if (_003C_003Ef__mg_0024cache3 == null)
-		{
-			_003C_003Ef__mg_0024cache3 = DeserializeVector3;
-		}
-		PhotonPeer.RegisterType(typeFromHandle2, 86, serializeMethod2, _003C_003Ef__mg_0024cache3);
-		Type typeFromHandle3 = typeof(Quaternion);
-		if (_003C_003Ef__mg_0024cache4 == null)
-		{
-			_003C_003Ef__mg_0024cache4 = SerializeQuaternion;
-		}
-		SerializeMethod serializeMethod3 = _003C_003Ef__mg_0024cache4;
-		if (_003C_003Ef__mg_0024cache5 == null)
-		{
-			_003C_003Ef__mg_0024cache5 = DeserializeQuaternion;
-		}
-		PhotonPeer.RegisterType(typeFromHandle3, 81, serializeMethod3, _003C_003Ef__mg_0024cache5);
-		Type typeFromHandle4 = typeof(PhotonPlayer);
-		if (_003C_003Ef__mg_0024cache6 == null)
-		{
-			_003C_003Ef__mg_0024cache6 = SerializePhotonPlayer;
-		}
-		SerializeMethod serializeMethod4 = _003C_003Ef__mg_0024cache6;
-		if (_003C_003Ef__mg_0024cache7 == null)
-		{
-			_003C_003Ef__mg_0024cache7 = DeserializePhotonPlayer;
-		}
-		PhotonPeer.RegisterType(typeFromHandle4, 80, serializeMethod4, _003C_003Ef__mg_0024cache7);
-	}
+		See: https://github.com/AssetRipper/AssetRipper/issues/655
 
-	private static byte[] SerializeVector3(object customobject)
-	{
-		Vector3 vector = (Vector3)customobject;
-		int targetOffset = 0;
-		byte[] array = new byte[12];
-		Protocol.Serialize(vector.x, array, ref targetOffset);
-		Protocol.Serialize(vector.y, array, ref targetOffset);
-		Protocol.Serialize(vector.z, array, ref targetOffset);
-		return array;
-	}
+	4. This script is unnecessary.
 
-	private static object DeserializeVector3(byte[] bytes)
-	{
-		Vector3 vector = default(Vector3);
-		int offset = 0;
-		Protocol.Deserialize(out vector.x, bytes, ref offset);
-		Protocol.Deserialize(out vector.y, bytes, ref offset);
-		Protocol.Deserialize(out vector.z, bytes, ref offset);
-		return vector;
-	}
+		If this script has no asset or script references, it can be deleted.
+		Be sure to resolve any compile errors before deleting because they can hide references.
 
-	private static byte[] SerializeVector2(object customobject)
-	{
-		Vector2 vector = (Vector2)customobject;
-		byte[] array = new byte[8];
-		int targetOffset = 0;
-		Protocol.Serialize(vector.x, array, ref targetOffset);
-		Protocol.Serialize(vector.y, array, ref targetOffset);
-		return array;
-	}
+	5. Script Content Level 0
 
-	private static object DeserializeVector2(byte[] bytes)
-	{
-		Vector2 vector = default(Vector2);
-		int offset = 0;
-		Protocol.Deserialize(out vector.x, bytes, ref offset);
-		Protocol.Deserialize(out vector.y, bytes, ref offset);
-		return vector;
-	}
+		AssetRipper was set to not load any script information.
 
-	private static byte[] SerializeQuaternion(object obj)
-	{
-		Quaternion quaternion = (Quaternion)obj;
-		byte[] array = new byte[16];
-		int targetOffset = 0;
-		Protocol.Serialize(quaternion.w, array, ref targetOffset);
-		Protocol.Serialize(quaternion.x, array, ref targetOffset);
-		Protocol.Serialize(quaternion.y, array, ref targetOffset);
-		Protocol.Serialize(quaternion.z, array, ref targetOffset);
-		return array;
-	}
+	6. Cpp2IL failed to decompile Il2Cpp data
 
-	private static object DeserializeQuaternion(byte[] bytes)
-	{
-		Quaternion quaternion = default(Quaternion);
-		int offset = 0;
-		Protocol.Deserialize(out quaternion.w, bytes, ref offset);
-		Protocol.Deserialize(out quaternion.x, bytes, ref offset);
-		Protocol.Deserialize(out quaternion.y, bytes, ref offset);
-		Protocol.Deserialize(out quaternion.z, bytes, ref offset);
-		return quaternion;
-	}
+		If this happened, there will be errors in the AssetRipper.log indicating that it happened.
+		This is an upstream problem, and the AssetRipper developer has very little control over it.
+		Please post a GitHub issue at: https://github.com/SamboyCoding/Cpp2IL/issues
 
-	private static byte[] SerializePhotonPlayer(object customobject)
-	{
-		int iD = ((PhotonPlayer)customobject).ID;
-		byte[] array = new byte[4];
-		int targetOffset = 0;
-		Protocol.Serialize(iD, array, ref targetOffset);
-		return array;
-	}
+	7. An incorrect path was provided to AssetRipper.
 
-	private static object DeserializePhotonPlayer(byte[] bytes)
-	{
-		int offset = 0;
-		int value;
-		Protocol.Deserialize(out value, bytes, ref offset);
-		if (PhotonNetwork.networkingPeer.mActors.ContainsKey(value))
-		{
-			return PhotonNetwork.networkingPeer.mActors[value];
-		}
-		return null;
-	}
+		This is characterized by "Mixed game structure has been found at" in the AssetRipper.log file.
+		AssetRipper expects games to conform to a normal file structure for Unity games of that platform.
+		An unexpected file structure could cause AssetRipper to not find the required files for script decompilation.
+		Generally, AssetRipper expects users to provide the root folder of the game. For example:
+			* Windows: the folder containing the game's .exe file
+			* Mac: the .app file/folder
+			* Linux: the folder containing the game's executable file
+			* Android: the apk file
+			* iOS: the ipa file
+			* Switch: the folder containing exefs and romfs
+
+	*/
 }
