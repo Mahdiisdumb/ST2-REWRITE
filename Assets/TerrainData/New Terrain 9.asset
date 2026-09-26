@@ -8,19 +8,19 @@ TerrainData:
   m_Name: New Terrain 9
   m_SplatDatabase:
     m_Splats:
-    - texture: {fileID: 2800000, guid: bde90fa9b6d4ba447bbe4c562978ef7e, type: 3}
+    - texture: {fileID: 2800000, guid: 5920c7f8c3f825640b5671290337fa9a, type: 3}
       normalMap: {fileID: 0}
       tileSize: {x: 8, y: 8}
       tileOffset: {x: 0, y: 0}
       specularMetallic: {x: 0, y: 0, z: 0, w: 0}
       smoothness: 0
-    - texture: {fileID: 2800000, guid: 6e0019fa86f2a1c4abfc33490e407b89, type: 3}
+    - texture: {fileID: 2800000, guid: 755586740327b094886a6f7f1bc9e99b, type: 3}
       normalMap: {fileID: 0}
       tileSize: {x: 20, y: 20}
       tileOffset: {x: 0, y: 0}
       specularMetallic: {x: 0, y: 0, z: 0, w: 0}
       smoothness: 0
-    - texture: {fileID: 2800000, guid: 3be1ca48c281942488740669d60e1583, type: 3}
+    - texture: {fileID: 2800000, guid: 814d5b4b11a65de4d84ce8459a692934, type: 3}
       normalMap: {fileID: 0}
       tileSize: {x: 15, y: 15}
       tileOffset: {x: 0, y: 0}

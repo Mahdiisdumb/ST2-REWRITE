@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: f714779bb93cbdb42836bf379a04c3a2
-timeCreated: 1790373884
+guid: ba152733a6c208c4591c91993011dd57
+timeCreated: 1790384760
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -14,7 +14,7 @@ TrueTypeFontImporter:
   fontNames:
   - Good Times
   fallbackFontReferences:
-  - {fileID: 12800000, guid: bb69010179a334f43b7239e3284b3ff7, type: 3}
+  - {fileID: 12800000, guid: c603e369f08aba44995750b464156987, type: 3}
   customCharacters:
   fontRenderingMode: 0
   output:

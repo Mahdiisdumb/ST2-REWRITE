@@ -1003,10 +1003,10 @@ Animation:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1709254077376921}
   m_Enabled: 1
-  m_Animation: {fileID: 7400000, guid: a25e4a41e854cf44994925b256319897, type: 2}
+  m_Animation: {fileID: 7400000, guid: 7801793091a245441830ca51fc9f5f44, type: 2}
   m_Animations:
-  - {fileID: 7400000, guid: e983a4bc727c0fd43b1ff5bb05cf41c0, type: 2}
-  - {fileID: 7400000, guid: a25e4a41e854cf44994925b256319897, type: 2}
+  - {fileID: 7400000, guid: d46c8d2aa27a67248b664b6eaeb82971, type: 2}
+  - {fileID: 7400000, guid: 7801793091a245441830ca51fc9f5f44, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
@@ -1020,7 +1020,7 @@ AudioSource:
   m_GameObject: {fileID: 1709254077376921}
   m_Enabled: 1
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 93e2f359e666d554d8f46f32b6ad700f, type: 2}
+  m_audioClip: {fileID: 8300000, guid: 83ffe9c835366f54f9c67b473b48f80b, type: 2}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2009,7 +2009,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: fa97f527b608e0742aac089270bb3c55, type: 2}
+  - {fileID: 2100000, guid: a1e9b5c6e97c04141a926fb5f7d4672c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2031,7 +2031,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: b8f7a7cf2d37a3a4785f7b2d81a3b79e, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 2e5d06235486cc143ba1d96ec55742c7, type: 2}
   m_Bones:
   - {fileID: 4328299215684997}
   - {fileID: 4924050743934937}

@@ -6224,7 +6224,7 @@ ParticleRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 6d92a8e2953c38d4e9a7c84123c16b20, type: 2}
+  - {fileID: 2100000, guid: 56f8b8bc3c324d14aa8a517548957636, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6305,7 +6305,7 @@ GUIText:
   m_PixelOffset: {x: 0, y: 0}
   m_LineSpacing: 1
   m_TabSize: 4
-  m_Font: {fileID: 12800000, guid: bc455f4018fe5934982114670fc01dc1, type: 3}
+  m_Font: {fileID: 12800000, guid: e56b63a018ab0b245a33574e2aec0d00, type: 3}
   m_Material: {fileID: 0}
   m_FontSize: 20
   m_FontStyle: 1
@@ -6373,12 +6373,12 @@ Animation:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1025901758691103}
   m_Enabled: 1
-  m_Animation: {fileID: 7400000, guid: d64d51a6b465fa04c9d807d1eb69c93b, type: 2}
+  m_Animation: {fileID: 7400000, guid: 6783be6e76ff8084ca38f49c07dc29b5, type: 2}
   m_Animations:
-  - {fileID: 7400000, guid: 9570d3bca19119d47a4a019fb4b3eee0, type: 2}
-  - {fileID: 7400000, guid: d64d51a6b465fa04c9d807d1eb69c93b, type: 2}
-  - {fileID: 7400000, guid: c78b33eb646a1dd4197f061688658c80, type: 2}
-  - {fileID: 7400000, guid: 1623b4e410f38cd4183c37d178c32e20, type: 2}
+  - {fileID: 7400000, guid: baa12c1626aff6c458c4930d3c242525, type: 2}
+  - {fileID: 7400000, guid: 6783be6e76ff8084ca38f49c07dc29b5, type: 2}
+  - {fileID: 7400000, guid: 691e4aa6a35661840a77729f8ae29d55, type: 2}
+  - {fileID: 7400000, guid: 5b8d9c5d3dd2078479fda7595abf3088, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
@@ -7962,7 +7962,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: cc938df4daf8b524da29ddfaa9007179, type: 2}
+  - {fileID: 2100000, guid: 7ffc0690476cf3c4e94eaad661a4730d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7984,7 +7984,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300000, guid: 4da355090688e9d4dae70561b106ac75, type: 2}
+  m_Mesh: {fileID: 4300000, guid: cce42c480a639f641b47030c1ab8f718, type: 2}
   m_Bones:
   - {fileID: 4543584136297381}
   - {fileID: 4958492976087124}

@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: GUIHUD
-  m_Shader: {fileID: 4800000, guid: 74fe79c5e78c493418f70331bc07b29d, type: 3}
+  m_Shader: {fileID: 4800000, guid: ba0e10fbdd216cd42a475347c9ea11de, type: 3}
   m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

@@ -18,11 +18,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
       _MainTex:
-        m_Texture: {fileID: 2800000, guid: b264652e7835c8a498d00e85f7b7b7b7, type: 3}
+        m_Texture: {fileID: 2800000, guid: fc63919b8eb5156429dd816c55fcfad0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
       _ShadowTex:
-        m_Texture: {fileID: 2800000, guid: 07957f1c10cec6c47b8396ae51ac4da2, type: 3}
+        m_Texture: {fileID: 2800000, guid: d0ee2c0a1c796c74f84478b852659678, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:

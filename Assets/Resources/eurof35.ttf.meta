@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: b2e52b09096f81a488dce9ffd34965be
-timeCreated: 1790373882
+guid: be101d37e8f12c34bba7a1f5f0b22593
+timeCreated: 1790384758
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -14,7 +14,7 @@ TrueTypeFontImporter:
   fontNames:
   - eurofurence light
   fallbackFontReferences:
-  - {fileID: 12800000, guid: 76bc6cdd5aac25046a9fa1b412cda667, type: 3}
+  - {fileID: 12800000, guid: f4f40252ad3f7c9478f18710d157ed75, type: 3}
   customCharacters:
   fontRenderingMode: 0
   output:

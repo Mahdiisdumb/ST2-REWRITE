@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: OVRLensCorrection
-  m_Shader: {fileID: 4800000, guid: d7a767c7dca56f64ca37636aa3796d07, type: 3}
+  m_Shader: {fileID: 4800000, guid: 4503094bb9c379543bf4a9e77c45de67, type: 3}
   m_ShaderKeywords:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
